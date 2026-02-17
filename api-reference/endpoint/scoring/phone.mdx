@@ -102,6 +102,10 @@ For more information please refer to [JSONP Callback](/options/jsonp-callback).
     "carrier": "",
     "reason": "Invalid phone number structure.",
     "isValid": false,
+    "blacklisted": false,
+    "disposable": false,
+    "phone": "+12121234567",
+    "countryCode": "US",
     "custom_rules_applied": {
       "total": 0,
       "rules": []
@@ -138,6 +142,20 @@ For more information please refer to [JSONP Callback](/options/jsonp-callback).
     </ResponseField>
     <ResponseField name="isValid" type="boolean" required>
       A boolean value that you can rely on to determine if the phone number is 100% safe & valid or not.
+    </ResponseField>
+    <ResponseField name="blacklisted" type="boolean" required>
+      Indicates if the phone number is blacklisted due to applying [custom
+      rules](/knowledge-base/custom-rules/overview) or were found in one of your
+      blacklists.
+    </ResponseField>
+    <ResponseField name="disposable" type="boolean" required>
+      A boolean value that indicates if the phone number is a disposable phone number or not.
+    </ResponseField>
+    <ResponseField name="phone" type="string" required>
+      The phone number you sent in the request.
+    </ResponseField>
+    <ResponseField name="countryCode" type="string" required>
+      The country code you sent in the request.
     </ResponseField>
 
     <ResponseField name="custom_rules_applied" type="object">
