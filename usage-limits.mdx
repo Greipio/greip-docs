@@ -1,16 +1,16 @@
 ---
 title: "Usage Limits"
 sidebarTitle: "Usage Limits"
-description: "List of any error you might get while using Greip API"
+description: "Rate limits and usage limits for Greip API"
 icon: "triangle-exclamation"
 iconType: "duotone"
 ---
 
 Each API has its own limitation rules. These rules helps the service being more secure by returning error messages to the requests detected by the system's security rules.
 
-Unlike other service providers, the only limits we consider is sending more than 1,000 per second.
+Each plan includes a monthly request quota (1,000 requests during the 3-day trial, then the full Standard or Premium quota after you convert). The API also rate-limits clients that send more than **1,000 requests per second**.
 
-So, you will be able to use the service as you want without any daily/monthly limits. Just TRY not to send more than 1k request per second.
+If you exceed your plan quota, the API returns `limit_reached` (code 103). If the account has no active trial or paid subscription, it returns `subscription_required` (code 127).
 
 <Tip>
   Note that you can check your API usage in real-time from your account
