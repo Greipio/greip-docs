@@ -1,0 +1,135 @@
+---
+title: "ASN Lookup"
+description: "This API method allows you to look up any given Autonomous System Number (ASN) and retrieve comprehensive data associated with it.\n\nThe information returned includes the ASN name, organization name, country, associated domain, contact email, phone number, and more. This functionality is essential for network analysis, troubleshooting, and understanding the infrastructure behind IP addresses."
+api: "GET https://v2.greipapi.com/lookup/asn/{asn}"
+openapi: "openapi/v2.json GET /lookup/asn/{asn}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="asn" type="string" required placeholder="AS number">
+  The ASN you want to look up.
+
+  Sample value: `AS6167` or `6167`
+</ParamField>
+
+### Query parameters
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Premium and above" color="purple" />
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "name": "POZMAN",
+    "org": "Institute of Bioorganic Chemistry Polish Academy of Science, Poznan Supercomputing and Networking Center",
+    "phone": "+48 61 8582010",
+    "email": null,
+    "domain": "poznan.pl",
+    "status": "ASSIGNED",
+    "created": "2004-04-17T11:47:57Z",
+    "type": "education",
+    "registry": "RIPE",
+    "prefixes": {
+      "ipv4": [
+        "150.254.0.0/16",
+        "62.3.160.0/19"
+      ],
+      "ipv6": [
+        "2001:808::/35"
+      ],
+      "total": 3
+    },
+    "number": "AS9112",
+    "country_code": "PL"
+  },
+  "execution_ms": 0
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="number" type="string" required>
+      Autonomous System Number you're looking up.
+    </ResponseField>
+    <ResponseField name="name" type="string" required>
+      Name of the organization.
+    </ResponseField>
+    <ResponseField name="country_code" type="string" required>
+      Country code of the organization.
+    </ResponseField>
+    <ResponseField name="org" type="string" required>
+      Organization name.
+    </ResponseField>
+    <ResponseField name="phone" type="string" required>
+      Phone number contact for the organization.
+    </ResponseField>
+    <ResponseField name="email" type="string" required>
+      Email contact for the organization.
+    </ResponseField>
+    <ResponseField name="domain" type="string" required>
+      Domain associated with the organization.
+    </ResponseField>
+    <ResponseField name="status" type="string" required>
+      Status of the organization.
+    </ResponseField>
+    <ResponseField name="created" type="string" required>
+      Date of organization creation.
+    </ResponseField>
+    <ResponseField name="type" type="string" required>
+      Type of organization ("isp", "hosting", "business", "education", or
+      "government").
+    </ResponseField>
+    <ResponseField name="registry" type="string" required>
+      Registration information of the organization.
+    </ResponseField>
+    <ResponseField name="prefixes" type="object" required>
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="ipv4" type="array" required>
+          List of IPv4 prefixes associated with the organization.
+        </ResponseField>
+        <ResponseField name="ipv6" type="array" required>
+          List of IPv6 prefixes associated with the organization.
+        </ResponseField>
+        <ResponseField name="total" type="integer" required>
+          Total number of prefixes associated with the organization.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />

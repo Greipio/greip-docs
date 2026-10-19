@@ -6,17 +6,23 @@ icon: "address-card"
 iconType: "duotone"
 ---
 
-To identify users detected through our Dashboard, you need to include the ﻿userID parameter in the requests you send to Greip. Let's look at some examples to illustrate this:
+import V2DocsAuthNote from "/snippets/v2-docs-auth-note.mdx";
+
+To attribute events in the Greip dashboard to a user in your system, pass the `user_id` query parameter on supported requests (v1 alias: `userID`).
+
+Examples (API v2):
 
 ```
-https://gregeoip.io/IPLookup?key=your-api-key&ip=1.1.1.1&userID=john@example.com
+https://v2.greipapi.com/lookup/ip/1.1.1.1?user_id=john@example.com
 ```
 
 ```
-https://gregeoip.io/IPLookup?key=your-api-key&ip=1.1.1.1&userID=John
+https://v2.greipapi.com/lookup/ip/1.1.1.1?user_id=John
 ```
 
-When you include the userID parameter in your requests to the Greip API, it allows you to identify and track fraudulent activities (found on the [Events page](https://dashboard.greip.io/events)) associated with specific user information such as user name, email address, phone number, and more.
+<V2DocsAuthNote />
+
+When you include `user_id`, you can identify and track fraudulent activities on the [Events page](https://dashboard.greip.io/events) using values such as email, phone, or an internal user id.
 
 <Frame caption="Greip Dashboard - Real-time events page">
 
@@ -25,8 +31,8 @@ When you include the userID parameter in your requests to the Greip API, it allo
 </Frame>
 
 <Warning>
-**IMPORTAN NOTE**
+**Important**
 
-There's no need to pass the userID parameter when you send [Payment Fraud Prevention](/api-reference/endpoint/scoring/payment) request to Greip API, as the User Identifier will be retreived from the input data you already pass, like `customer_email`, `customer_phone`, or `customer_id`.
+You do not need `user_id` on [Payment Fraud Detection](/api-reference/v2/endpoint/scoring/payment) requests. Greip derives the identifier from fields such as `customer_email`, `customer_phone`, or `customer_id` in the payment payload.
 
 </Warning>

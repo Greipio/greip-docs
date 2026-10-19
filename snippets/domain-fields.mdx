@@ -1,6 +1,12 @@
 <ResponseField name="name" type="string" required>
     The full domain name associated with the email address (for example, `gmail.com`).
 </ResponseField>
+<ResponseField name="is_disposable" type="boolean|null">
+    Indicates whether the domain is used for disposable or temporary email services.
+</ResponseField>
+<ResponseField name="is_forwarding" type="boolean|null">
+    Indicates whether the domain appears to be an email forwarding service.
+</ResponseField>
 <ResponseField name="is_dangerous" type="boolean|null" required>
     Indicates whether the domain is flagged as dangerous or suspicious, which may suggest a higher risk of fraud or abuse.
 
@@ -29,4 +35,13 @@
 </ResponseField>
 <ResponseField name="is_new" type="boolean|null" required>
     Indicates whether the domain is new or recently registered (registered within 1 year), which may affect its reputation and trustworthiness.
+</ResponseField>
+<ResponseField name="domain_age_days" type="integer|null">
+    Days since domain registration when `created_at` is known; otherwise `null`.
+</ResponseField>
+<ResponseField name="has_website" type="boolean|null">
+    Whether the domain resolves to a public host (DNS A/AAAA lookup). `null` when lookup did not complete in time.
+</ResponseField>
+<ResponseField name="mx_provider_class" type="string">
+    Inferred mail host category when MX is present: `none`, `google_workspace`, `microsoft_365`, `yahoo`, `zoho`, `proton`, or `custom`.
 </ResponseField>

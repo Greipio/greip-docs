@@ -89,8 +89,8 @@ Custom rules can be defined with the following actions:
   </Accordion>
   <Accordion title="IP reputation">
 
-    - **Add to blacklist**: Marks the IP address as blacklisted. It adds a `blacklisted` property with the value of `true` under the `threats` object in the API response.
-    - **Add to whitelist**: Marks the IP address as whitelisted. It adds a `blacklisted` property with the value of `false` under the `threats` object in the API response.
+    - **Add to blacklist**: Marks the IP address as blacklisted. It adds a `blacklisted` property with the value of `true` under the `security` object in the API response (v2: `is_blacklisted`).
+    - **Add to whitelist**: Marks the IP address as whitelisted. It adds a `blacklisted` property with the value of `false` under the `security` object in the API response (v2: `is_blacklisted`).
 
   </Accordion>
   <Accordion title="Payment fraud endpoint">

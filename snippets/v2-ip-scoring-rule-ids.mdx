@@ -1,0 +1,14 @@
+Each object has `id` and `description`. The array lists only signals that fired for this request (empty when none apply).
+
+<Expandable title="Rule ids">
+
+| Id | Description |
+| --- | --- |
+| `IP_BLACKLISTED` | IP address is on a Greip threat list or your custom blocklist. |
+| `IP_TOR` | IP address is a known Tor exit node. |
+| `IP_VPN_OR_PROXY` | IP address is associated with VPN, proxy, or anonymization service. |
+| `IP_RELAY` | IP address matches a private relay or similar anonymization pattern. |
+| `IP_BOT` | Request user-agent matches automated bot patterns. |
+| `IP_HOSTING` | IP address belongs to hosting or cloud provider ASN. |
+
+</Expandable>

@@ -16,7 +16,7 @@ Greip provides advanced content moderation tools that use machine learning (ML) 
 
 ### 1. Profanity Detection
 
-Endpoint: [`/scoring/profanity`](/api-reference/endpoint/scoring/profanity)
+Endpoint: [`/score/text`](/api-reference/v2/endpoint/scoring/profanity)
 
 **How it helps:**
 
@@ -33,7 +33,7 @@ Customize the response to either block the content, flag it for review, or notif
 **Example Use Case:**
 
 A user submits a comment: "This is a terrible product, and I hate it!"
-Use the [`/scoring/profanity`](/api-reference/endpoint/scoring/profanity) endpoint to analyze the text.
+Use the [`/score/text`](/api-reference/v2/endpoint/scoring/profanity) endpoint to analyze the text.
 If the text contains profanity or exceeds a risk threshold, flag it for review or automatically reject it.
 
 ### 2. IP Reputation and Threat Intelligence
@@ -52,7 +52,7 @@ Use Greip to check the IP’s reputation and flag the user for further review.
 
 ### 3. Email and Phone Validation
 
-Endpoints: [`/scoring/email`](/api-reference/endpoint/scoring/email), [`/scoring/phone`](/api-reference/endpoint/scoring/phone)
+Endpoints: [`/scoring/email`](/api-reference/v2/endpoint/scoring/email), [`/scoring/phone`](/api-reference/v2/endpoint/scoring/phone)
 **How it helps:**
 
 Detect disposable or temporary email addresses often used by spammers or trolls.
@@ -61,7 +61,7 @@ Validate phone numbers to ensure they are legitimate and not associated with fra
 **Example Use Case:**
 
 A user signs up with a disposable email address (e.g., `temp@mailinator.com`).
-Use the [`/scoring/email`](/api-reference/endpoint/scoring/email) endpoint to flag the account for manual review or block it automatically.
+Use the [`/scoring/email`](/api-reference/v2/endpoint/scoring/email) endpoint to flag the account for manual review or block it automatically.
 
 ### 4. User Behavior Monitoring
 

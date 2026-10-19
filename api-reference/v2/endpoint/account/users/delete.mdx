@@ -1,0 +1,92 @@
+---
+title: "User Data Deletion"
+description: "In some cases, such as data protection regulations, businesses that process personal data are required to delete it upon request.\n\nUsing this method, you'll be able to delete all data related to your user in a single request."
+api: "DELETE https://v2.greipapi.com/account/users"
+openapi: "openapi/v2.json DELETE /account/users"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+
+<V2Auth />
+
+<Note>Rate limit: at most 3 deletion requests per API key per 24 hours.</Note>
+
+<Warning>
+  **Irreversible.** Deleted data cannot be recovered.
+</Warning>
+
+`DELETE /account/users` with a JSON body.
+
+### JSON body
+
+<ParamField body="value" type="string" required>
+  Email, phone, or your `customer_id` value to delete all matching stored data.
+</ParamField>
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "transaction_data": 25,
+    "ips": 4,
+    "profanity_data": 3,
+    "emails": 1,
+    "phone_numbers": 1,
+    "ibans": 10
+  },
+  "execution_ms": 0
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="transaction_data" type="integer">
+      Number of transactions or transaction related data deleted.
+    </ResponseField>
+    <ResponseField name="ips" type="integer">
+      Number of IP addresses related data deleted.
+    </ResponseField>
+    <ResponseField name="profanity_data" type="integer">
+      Number of user data deleted from the usage of Profanity Detection endpint.
+    </ResponseField>
+    <ResponseField name="emails" type="integer">
+      Number of user data deleted from the Email Scoring endpoint.
+    </ResponseField>
+    <ResponseField name="phone_numbers" type="integer">
+      Number of user data deleted from the Phone Scoring endpoint.
+    </ResponseField>
+    <ResponseField name="ibans" type="integer">
+      Number of user data deleted from the IBAN Lookup endpoint.
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+

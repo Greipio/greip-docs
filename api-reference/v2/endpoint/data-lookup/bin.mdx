@@ -1,0 +1,52 @@
+---
+title: "BIN / IIN Lookup"
+description: "Utilize this module to effortlessly retrieve comprehensive information associated with a debit or credit card.\n\nThe API provides details such as card type (debit or credit), scheme (Visa, Mastercard, etc.), brand (gold, platinum, etc.), and bank information.\n\nThis data is invaluable for various applications, including verifying customer payment details, detecting fraudulent transactions, and delivering personalized services to enhance user experiences."
+api: "GET https://v2.greipapi.com/lookup/bin/{bin}"
+openapi: "openapi/v2.json GET /lookup/bin/{bin}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="bin" type="string" required placeholder="The BIN">
+  The BIN/IIN of the card (min: 6 digits).
+
+  Sample value: `456789`, `456789XXXXXX1234`, or `4567891234567890`.
+</ParamField>
+
+### Query parameters
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+  <ResponseExample>
+
+import V2BinSuccessExample from "/snippets/v2-bin-success-example.mdx";
+
+<V2BinSuccessExample />
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2BinResponseProperties from "/snippets/v2-bin-response-properties.mdx";
+
+<V2BinResponseProperties />

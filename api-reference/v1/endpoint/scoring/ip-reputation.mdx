@@ -80,7 +80,7 @@ For more information please refer to [JSONP Callback](/options/jsonp-callback).
 <Panel>
   <MCPCallout />
   
-  <Availability plan="Free and above" color="green" />
+  <Availability plan="Standard and above" color="green" />
 
   <ResponseExample>
 
@@ -89,7 +89,7 @@ For more information please refer to [JSONP Callback](/options/jsonp-callback).
   "status": "success",
   "data": {
     "ip": "12.12.12.12",
-    "threats": {
+    "security": {
       "isProxy": true,
       "proxyType": "Socks",
       "isTor": false,
@@ -126,7 +126,7 @@ For more information please refer to [JSONP Callback](/options/jsonp-callback).
     <ResponseField name="ip" type="string" required>
       IP address you're looking up.
     </ResponseField>
-    <ResponseField name="threats" type="object" required>
+    <ResponseField name="security" type="object" required>
       <Expandable title="details">
         <ResponseField name="isProxy" type="boolean" required>
           Indicates if the IP address is a proxy service.

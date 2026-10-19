@@ -8,21 +8,21 @@ iconType: "duotone"
 
 ## Overview
 
-In both [IP Geolocation](/api-reference/endpoint/data-lookup/geoip) and [IP Lookup](/api-reference/endpoint/data-lookup/ip) endpoints you can pass the `security` module to the `params` query parameter in order to get full insights about the security threats of that specific IP address.
+In both [IP Geolocation](/api-reference/v2/endpoint/data-lookup/geoip) and [IP Lookup](/api-reference/v2/endpoint/data-lookup/ip) endpoints you can pass the `security` module in the `params` query parameter to get full insights about security threats for that IP address.
 
 ## Sample Request
 
 <CodeGroup>
 ```bash cURL
 curl --request GET \
-  --url 'https://greipapi.com/geoip?params=security' \
+  --url 'https://v2.greipapi.com/geo/ip?params=security' \
   --header 'Authorization: Bearer <token>'
 ```
 
 ```python Python
 import requests
 
-url = "https://greipapi.com/geoip"
+url = "https://v2.greipapi.com/geo/ip"
 
 querystring = {"params":"security"}
 
@@ -36,7 +36,7 @@ print(response.text)
 ```javascript Javascript
 const options = { method: "GET", headers: { Authorization: "Bearer <token>" } };
 
-fetch("https://greipapi.com/geoip?params=security", options)
+fetch("https://v2.greipapi.com/geo/ip?params=security", options)
   .then((response) => response.json())
   .then((response) => console.log(response))
   .catch((err) => console.error(err));
@@ -48,7 +48,7 @@ fetch("https://greipapi.com/geoip?params=security", options)
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-  CURLOPT_URL => "https://greipapi.com/geoip?params=security",
+  CURLOPT_URL => "https://v2.greipapi.com/geo/ip?params=security",
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
@@ -81,7 +81,7 @@ import (
 
 func main() {
 
-	url := "https://greipapi.com/geoip?params=security"
+	url := "https://v2.greipapi.com/geo/ip?params=security"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
@@ -99,7 +99,7 @@ func main() {
 ```
 
 ```java Java
-HttpResponse<String> response = Unirest.get("https://greipapi.com/geoip?params=security")
+HttpResponse<String> response = Unirest.get("https://v2.greipapi.com/geo/ip?params=security")
   .header("Authorization", "Bearer <token>")
   .asString();
 ```
@@ -110,33 +110,35 @@ HttpResponse<String> response = Unirest.get("https://greipapi.com/geoip?params=s
 
 ```json
 {
+  "success": true,
   "data": {
-    "ip": "165.227.149.217",
-    "ipType": "IPv4",
-    "IPNumber": 2783155673,
-    "continentName": "Europe",
-    "continentCode": "EU",
-    "countryCode": "DE",
-    "continentGeoNameID": 6255148,
-    "countryName": "Germany",
-    "countryGeoNameID": 2921044,
-    "regionName": "Hessen",
-    "cityName": "Frankfurt am Main",
-    "zipCode": "65931",
-    "latitude": "50.115520",
-    "longitude": "8.684170",
-    // ↓↓ this added here ↓↓
+    "ip": {
+      "address": "165.227.149.217",
+      "version": 4,
+      "numeric": 2783155673,
+      "bogon": false
+    },
+    "geo": {
+      "continent": "Europe",
+      "continent_code": "EU",
+      "country": "Germany",
+      "country_code": "DE",
+      "region": "Hessen",
+      "city": "Frankfurt am Main",
+      "postal": "65931",
+      "latitude": 50.11552,
+      "longitude": 8.68417
+    },
     "security": {
-      "isProxy": true,
-      "proxyType": "VPN",
-      "isTor": false,
-      "isBot": false,
-      "isRelay": false,
-      "isHosting": true
+      "vpn_or_proxy": true,
+      "vpn_or_proxy_type": "VPN",
+      "tor": false,
+      "bot": false,
+      "relay": false,
+      "hosting": true,
+      "is_blacklisted": false
     }
-    // ↑↑ this added here ↑↑
   },
-  "status": "success",
-  "executionTime": 4
+  "execution_ms": 4
 }
 ```

@@ -8,17 +8,29 @@ iconType: "duotone"
 
 To access our API and take advantage of all the available methods, you will need to authenticate your requests using your unique API Key. This key is a secure authentication mechanism that ensures only authorized users can access the API.
 
-To obtain your API Key, simply navigate to your [account dashboard](https://dashboard.greip.io/home). Once you have your API Key, you can begin authenticating your requests.
+To obtain your API Key, navigate to your [account dashboard](https://dashboard.greip.io/home).
 
-To authenticate your requests, append the key parameter to the request URL, along with your API Key. Here is an example of how to do this:
+## API v2 (recommended)
 
-Add your API Key to the key parameter just like this:
+Send the key in the `Authorization` header on every request to `https://v2.greipapi.com`:
+
+```bash cURL
+curl --request GET \
+  --url 'https://v2.greipapi.com/geo/ip' \
+  --header 'Authorization: Bearer <api-key>'
+```
+
+Do not pass the API key as `?key=` or in a JSON `key` field on v2. That returns `invalid_params` (104). See [Migration](/migration).
+
+## API v1 (Legacy)
+
+On the legacy host (`https://greipapi.com`), you may pass the key in the query string:
 
 ```bash
 https://greipapi.com/geoip?key=1234567890
 ```
 
-Or, you can use the API Key as a Bearer Token as follows:
+Bearer authentication is also supported on v1:
 
 ```bash cURL
 curl --request GET \
@@ -28,4 +40,4 @@ curl --request GET \
 
 ## Securing your API Key
 
-For more information about how to secure your API Key, please refer to [Protecting your API Key]()
+For more information about how to secure your API Key, please refer to [Protecting your API Key](https://docs.greip.io/knowledge-base/account-management/protecting-your-api-key).

@@ -1,0 +1,81 @@
+---
+title: "Domain Lookup"
+description: "This method allows you to retrieve detailed information about a domain by providing its domain name in the request.\n\nThe API returns valuable data, such as the domain’s creation date, with some risk evaluation metrics."
+api: "GET https://v2.greipapi.com/lookup/domains/{domain}"
+openapi: "openapi/v2.json GET /lookup/domains/{domain}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="domain" type="string" required placeholder="The domain name">
+  The fully qualified domain name (FQDN) to look up. [Learn more](https://en.wikipedia.org/wiki/Fully_qualified_domain_name)
+
+  Sample value: `example.com`
+</ParamField>
+
+### Query parameters
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "name": "dangerous-domain.com",
+    "is_dangerous": true,
+    "is_disposable": false,
+    "is_forwarding": false,
+    "is_spf": false,
+    "is_dmarc": false,
+    "is_dkim": false,
+    "is_mx": false,
+    "is_bimi": false,
+    "created_at": "2025-02-05",
+    "is_new": true
+  },
+  "execution_ms": 0
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <DomainFields />
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+

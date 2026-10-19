@@ -1,0 +1,16 @@
+Each object has `id` and `description`. The array lists only signals that fired for this request (empty when risk is low).
+
+<Expandable title="Rule ids">
+
+| Id | Description |
+| --- | --- |
+| `EMAIL_INVALID_STRUCTURE` | Email address failed syntax validation. |
+| `EMAIL_CUSTOM_BLACKLIST` | Email address or domain is on your blocklist. |
+| `EMAIL_DANGEROUS_DOMAIN` | Email domain is considered dangerous. |
+| `EMAIL_DISPOSABLE` | Email address or domain is flagged as disposable or spam. |
+| `DOMAIN_NO_MX` | Domain has no usable MX records for receiving mail. |
+| `DOMAIN_NEW` | Domain registration is newer than one year. |
+| `DOMAIN_NO_SPF` | Domain does not publish a valid SPF record. |
+| `DOMAIN_NO_DMARC` | Domain does not publish a DMARC policy. |
+
+</Expandable>

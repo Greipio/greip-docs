@@ -1,0 +1,25 @@
+<ParamField query="params" type="string" placeholder="The modules you want to use">
+  The params command can be used to specify the required modules you want to get in the response.
+
+  Expected values: `security`, `currency`, `timezone`, `location`, and/or `device`
+
+  Sample value: `security,timezone,currency`
+
+  For more information please refer to [Customize response modules](/options/customize-modules).
+</ParamField>
+
+<ParamField query="lang" type="string" default="EN" placeholder="Response language">
+  The lang command is used to get a response in a specific language.
+
+  Expected values: `EN`, `AR`, `DE`, `FR`, `ES`, `JA`, `ZH`, or `RU`
+
+  For more information please refer to [Localization](/options/localization).
+</ParamField>
+
+<ParamField query="callback" type="string" placeholder="JSONP callback">
+  The callback command can help you make the response a JSONP format.
+
+  Expected values: any name that can be used as a function name in Javascript, e.g: `myFunctionName`.
+
+  For more information please refer to [JSONP callback](/options/jsonp-callback).
+</ParamField>

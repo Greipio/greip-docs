@@ -1,0 +1,142 @@
+---
+title: "Phone Scoring"
+description: "This method serves as an additional layer of protection in your system for validating phone numbers. It not only checks the syntax but also assesses the likelihood of the phone number being valid and operational.\n\nBy incorporating this scoring into your workflow, you can enhance fraud detection, reduce invalid inputs, and improve the overall quality of data captured."
+api: "GET https://v2.greipapi.com/score/phone/{phone}"
+openapi: "openapi/v2.json GET /score/phone/{phone}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="phone" type="string" required placeholder="Phone number">
+  The phone number you want to validate.
+
+  Expected values: a phone number
+
+  Sample value: `+12121234567`, `0012121234567`, `12121234567`, or `2121234567`
+</ParamField>
+
+### Query parameters
+
+<ParamField query="country_code" type="string" required placeholder="Country code">
+  The `ISO 3166-1 alpha-2` format of the country code of the phone number. [Learn more](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+
+  Sample value: `US`
+</ParamField>
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Premium and above" color="purple" />
+
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "carrier": null,
+    "is_valid": false,
+    "is_blacklisted": false,
+    "is_disposable": false,
+    "phone": "+12121234567",
+    "country_code": "US",
+    "risk_level": "high",
+    "recommendation": "reject",
+    "reasons": ["Invalid phone number structure."],
+    "custom_rules_applied": {
+      "total": 0,
+      "rules": []
+    }
+  },
+  "execution_ms": 1
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="carrier" type="string" required>
+      Carrier name of the phone number.
+    </ResponseField>
+    <ResponseField name="risk_level" type="string" required>
+      Overall risk band (`low`, `medium`, or `high`).
+    </ResponseField>
+    <ResponseField name="recommendation" type="string" required>
+      Suggested action (`accept`, `review`, or `reject`).
+    </ResponseField>
+    <ResponseField name="reasons" type="array" required>
+      Human-readable strings explaining elevated risk. Empty when `risk_level` is `low`.
+    </ResponseField>
+    <ResponseField name="is_valid" type="boolean" required>
+      Whether the number passes structure and validation checks for the given `country_code`.
+    </ResponseField>
+    <ResponseField name="is_blacklisted" type="boolean" required>
+      Indicates if the phone number is blacklisted due to applying [custom
+      rules](/knowledge-base/custom-rules/overview) or were found in one of your
+      blacklists.
+    </ResponseField>
+    <ResponseField name="is_disposable" type="boolean" required>
+      Whether the number is flagged as disposable or spam.
+    </ResponseField>
+    <ResponseField name="phone" type="string" required>
+      The phone number you sent in the request.
+    </ResponseField>
+    <ResponseField name="country_code" type="string" required>
+      The country code you sent in the request (ISO 3166-1 alpha-2).
+    </ResponseField>
+
+    <ResponseField name="custom_rules_applied" type="object">
+      The custom rules applied to this request, [learn
+      more](/knowledge-base/custom-rules/overview).
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="total" type="integer" required>
+          The total number of custom rules applied to this request.
+        </ResponseField>
+        <ResponseField name="rules" type="object" required>
+          The custom rules applied to this request, [learn
+          more](/knowledge-base/custom-rules/overview).
+          <Expandable title="properties" defaultOpen={true}>
+            <ResponseField name="id" type="string" required>
+              The rule ID as shown in the dashboard (e.g: `CR104`).
+            </ResponseField>
+            <ResponseField name="title" type="string" required>
+              The rule title you set when creating the rule.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+

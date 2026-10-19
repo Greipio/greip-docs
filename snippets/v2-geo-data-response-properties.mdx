@@ -1,0 +1,13 @@
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+import V2GeoLookupDataFields from "/snippets/v2-geo-lookup-data-fields.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <V2GeoLookupDataFields />
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />

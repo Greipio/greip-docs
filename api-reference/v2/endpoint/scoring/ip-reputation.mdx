@@ -1,0 +1,170 @@
+---
+title: "IP Scoring"
+description: "Access comprehensive threat intelligence data linked to a specific IP address. This endpoint provides insights into malicious activity, reputation scoring, and potential security risks associated with the IP address."
+api: "GET https://v2.greipapi.com/score/ip/{ip}"
+openapi: "openapi/v2.json GET /score/ip/{ip}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+import V2IpScoringRuleIds from "/snippets/v2-ip-scoring-rule-ids.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="ip" type="string" required placeholder="IP address">
+  The IP address you want to retrieve threat intelligence for.
+
+  Expected values: an IP address (IPv4 or IPv6)
+
+  Sample value: `1.1.1.1`
+</ParamField>
+
+### Query parameters
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "ip": "12.12.12.12",
+    "score": 35,
+    "risk_level": "medium",
+    "recommendation": "review",
+    "rules": [
+      {
+        "id": "IP_VPN_OR_PROXY",
+        "description": "IP address is associated with VPN, proxy, or anonymization service."
+      },
+      {
+        "id": "IP_HOSTING",
+        "description": "IP address belongs to hosting or cloud provider ASN."
+      }
+    ],
+    "security": {
+      "vpn_or_proxy": true,
+      "vpn_or_proxy_type": "Socks",
+      "tor": false,
+      "bot": false,
+      "relay": false,
+      "relay_country": null,
+      "relay_city": null,
+      "hosting": true,
+      "is_blacklisted": false
+    },
+    "custom_rules_applied": {
+      "total": 0,
+      "rules": []
+    }
+  },
+  "execution_ms": 90
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="ip" type="string" required>
+      IP address you're looking up.
+    </ResponseField>
+    <ResponseField name="score" type="integer" required>
+      Composite threat score from 0 to 100 derived from the `security` module.
+
+      A higher score means higher risk.
+    </ResponseField>
+    <ResponseField name="risk_level" type="string" required>
+      Risk band (`low`, `medium`, or `high`) from the composite score.
+    </ResponseField>
+    <ResponseField name="recommendation" type="string" required>
+      Suggested action (`accept`, `review`, or `reject`).
+    </ResponseField>
+    <ResponseField name="rules" type="array" required>
+      <V2IpScoringRuleIds />
+    </ResponseField>
+    <ResponseField name="security" type="object" required>
+      <Expandable title="details">
+        <ResponseField name="vpn_or_proxy" type="boolean" required>
+          Indicates if the IP address is a proxy service.
+        </ResponseField>
+        <ResponseField name="vpn_or_proxy_type" type="string" required>
+          Type of proxy used.
+        </ResponseField>
+        <ResponseField name="tor" type="boolean" required>
+          Indicates if accessed through Tor network.
+        </ResponseField>
+        <ResponseField name="bot" type="boolean" required>
+          Indicates if the user is a bot.
+        </ResponseField>
+        <ResponseField name="relay" type="boolean" required>
+          Indicates if it's a Apple's Private Relay connection.
+        </ResponseField>
+        <ResponseField name="relay_country" type="string">
+          Country code for Apple Private Relay when detected; otherwise `null`.
+        </ResponseField>
+        <ResponseField name="relay_city" type="string">
+          City for Apple Private Relay when detected; otherwise `null`.
+        </ResponseField>
+        <ResponseField name="hosting" type="boolean" required>
+          Indicates if the IP address belong to a hosting provider.
+        </ResponseField>
+        <ResponseField name="is_blacklisted" type="boolean" required>
+          Indicates if the IP address is blacklisted due to applying [custom
+          rules](/knowledge-base/custom-rules/overview) or were found in one of
+          your blacklists.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="custom_rules_applied" type="object">
+      The custom rules applied to this request, [learn
+      more](/knowledge-base/custom-rules/overview).
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="total" type="integer" required>
+          The total number of custom rules applied to this request.
+        </ResponseField>
+        <ResponseField name="rules" type="array" required>
+          Custom rules that matched this request.
+          <Expandable title="properties" defaultOpen={true}>
+            <ResponseField name="id" type="string" required>
+              The rule ID as shown in the dashboard (e.g: `CR104`).
+            </ResponseField>
+            <ResponseField name="title" type="string" required>
+              The rule title you set when creating the rule.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+

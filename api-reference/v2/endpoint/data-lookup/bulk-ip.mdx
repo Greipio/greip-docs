@@ -1,0 +1,90 @@
+---
+title: "Bulk IP Lookup"
+description: "This API enables you to retrieve information for multiple IP addresses in a single request.\n\nBy using the `/lookup/ip/bulk` method, you can efficiently gather data such as location, ISP, and risk factors for a batch of IPs, saving time and streamlining your workflow for large-scale analysis."
+api: "GET https://v2.greipapi.com/geo/ip/bulk"
+openapi: "openapi/v2.json GET /geo/ip/bulk"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+
+<V2Auth />
+
+
+### Query parameters
+
+<ParamField query="ips" type="string" required placeholder="Comma separated IP addresses">
+  The ips command is used to specify the IP addresses you want to look up.
+
+  Expected values: comma separated IP addresses (IPv4 or IPv6)
+
+  Sample value: `1.1.1.1,2.2.2.2`
+</ParamField>
+
+<V2GeoQuery />
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "1.1.1.1": {
+      "ip": {
+        "address": "1.1.1.1",
+        "version": 4,
+        "numeric": 16843009,
+        "bogon": false
+      },
+      "geo": {
+        "continent": "Oceania",
+        "continent_code": "OC",
+        "country": "Australia",
+        "country_code": "AU",
+        "city": "Sydney"
+      }
+    },
+    "8.8.8.8": {
+      "ip": {
+        "address": "8.8.8.8",
+        "version": 4,
+        "numeric": 134744072,
+        "bogon": false
+      },
+      "geo": {
+        "continent": "North America",
+        "continent_code": "NA",
+        "country": "United States",
+        "country_code": "US",
+        "city": "Mountain View"
+      }
+    }
+  },
+  "execution_ms": 2
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2BulkIpResponseProperties from "/snippets/v2-bulk-ip-response-properties.mdx";
+
+<V2BulkIpResponseProperties />

@@ -1,0 +1,90 @@
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="geo" type="object" required>
+      Core country attributes (always present when the country code is valid).
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="continent" type="string">
+          Localized continent name.
+        </ResponseField>
+        <ResponseField name="continent_code" type="string">
+          Continent code.
+        </ResponseField>
+        <ResponseField name="continent_geo_name_id" type="integer">
+          GeoName ID of the continent.
+        </ResponseField>
+        <ResponseField name="country" type="string">
+          Localized country name.
+        </ResponseField>
+        <ResponseField name="country_code" type="string" required>
+          ISO 3166-1 alpha-2 country code from the path.
+        </ResponseField>
+        <ResponseField name="country_geo_name_id" type="integer">
+          GeoName ID of the country.
+        </ResponseField>
+        <ResponseField name="capital" type="string">
+          Capital city.
+        </ResponseField>
+        <ResponseField name="population" type="integer">
+          Population.
+        </ResponseField>
+        <ResponseField name="phone" type="string">
+          International dialing code.
+        </ResponseField>
+        <ResponseField name="is_eu" type="boolean">
+          Whether the country is in the EU.
+        </ResponseField>
+        <ResponseField name="neighbours" type="string">
+          Comma-separated neighbour country codes.
+        </ResponseField>
+        <ResponseField name="tld" type="string">
+          Country top-level domain (for example `.us`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="language" type="object">
+      Included when `params` contains `language`.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="name" type="string" />
+        <ResponseField name="code" type="string" />
+        <ResponseField name="native" type="string" />
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="flag" type="object">
+      Included when `params` contains `flag`.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="emoji" type="string" />
+        <ResponseField name="unicode" type="string" />
+        <ResponseField name="png" type="object">
+          <Expandable title="properties" defaultOpen={true}>
+            <ResponseField name="1000px" type="string" />
+            <ResponseField name="250px" type="string" />
+            <ResponseField name="100px" type="string" />
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="svg" type="string" />
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="currency" type="object">
+      Included when `params` contains `currency`.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="name" type="string" />
+        <ResponseField name="code" type="string" />
+        <ResponseField name="symbol" type="string" />
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="custom_rules_applied" type="object">
+      Custom rules metadata (same shape as other geo endpoints).
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="total" type="integer" />
+        <ResponseField name="rules" type="array" />
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />

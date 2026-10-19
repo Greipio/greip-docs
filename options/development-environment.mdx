@@ -6,9 +6,11 @@ icon: "microscope"
 iconType: "duotone"
 ---
 
-Our Development Environment offers a seamless integration process for our API with your website or application. To ensure that your current plan's available requests remain unaffected, we recommend implementing the integration by adding the &mode=test parameter to your request.
+import V2DocsAuthNote from "/snippets/v2-docs-auth-note.mdx";
 
-We highly recommend testing your integration thoroughly with the &mode=test parameter before removing it from your requests to ensure that everything is functioning as expected.
+Our Development Environment offers a seamless integration process for our API with your website or application. To ensure that your current plan's available requests remain unaffected, we recommend implementing the integration by adding the `mode=test` parameter to your request.
+
+We highly recommend testing your integration thoroughly with `mode=test` before removing it from your requests to ensure that everything is functioning as expected.
 
 <Note>
   This parameter accepts two values, which are `test` and `live` and will be
@@ -17,14 +19,26 @@ We highly recommend testing your integration thoroughly with the &mode=test para
   it's used just through the development stage.
 </Note>
 
-Once the integration process is complete, you can remove the "&mode=test" parameter from your API requests. This parameter is designed solely for testing purposes and has no impact on the actual functionality of the API.
+Once the integration process is complete, you can remove the `mode=test` parameter from your API requests. This parameter is designed solely for testing purposes and has no impact on the actual functionality of the API.
 
-## Sample Requests
+## Sample requests (API v2)
 
-```
-https://greipapi.com/geoip?key=12345&parms=location,currency&mode=test
+IP geolocation for the caller (no IP in the path):
+
+```bash cURL
+curl -G 'https://v2.greipapi.com/geo/ip' \
+  --data-urlencode 'params=location,currency' \
+  --data-urlencode 'mode=test' \
+  -H 'Authorization: Bearer <api-key>'
 ```
 
+Lookup for a specific IP:
+
+```bash cURL
+curl -G 'https://v2.greipapi.com/lookup/ip/1.1.1.1' \
+  --data-urlencode 'params=location,currency' \
+  --data-urlencode 'mode=test' \
+  -H 'Authorization: Bearer <api-key>'
 ```
-https://greipapi.com/IPLookup?key=12345&parms=location,currency&mode=test
-```
+
+<V2DocsAuthNote />

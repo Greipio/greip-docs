@@ -8,179 +8,379 @@
     "dark": "#008CFF"
   },
   "contextual": {
-    "options": ["chatgpt", "claude", "copy", "view"]
+    "options": [
+      "chatgpt",
+      "claude",
+      "copy",
+      "view"
+    ]
   },
   "banner": {
-    "content": "🚀 Greip's API achieved **99.98%** uptime for the last 90 days, [learn more](https://status.greip.io/).",
+    "content": "\ud83d\ude80 Greip's API achieved **99.98%** uptime for the last 90 days, [learn more](https://status.greip.io/).",
     "dismissible": true
   },
   "favicon": "/favicon-1.svg",
   "navigation": {
-    "tabs": [
+    "versions": [
       {
-        "tab": "Documentation",
-        "groups": [
+        "version": "API v2",
+        "default": true,
+        "tag": "Recommended",
+        "tabs": [
           {
-            "group": "Get Started",
-            "pages": [
-              "introduction",
-              "api-policy",
-              "authentication",
-              "https-support",
-              "error-codes",
-              "usage-limits",
-              "docs-mcp-server"
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "introduction",
+                  "migration",
+                  "api-policy",
+                  "authentication",
+                  "https-support",
+                  "error-codes",
+                  "usage-limits",
+                  "docs-mcp-server"
+                ]
+              },
+              {
+                "group": "API Features",
+                "pages": [
+                  "options/customize-modules",
+                  "options/response-format",
+                  "options/localization",
+                  "options/development-environment",
+                  "options/user-identifier",
+                  "options/jsonp-callback",
+                  "options/vpn-proxy-detection"
+                ]
+              }
             ]
           },
           {
-            "group": "API Features",
-            "pages": [
-              "options/customize-modules",
-              "options/response-format",
-              "options/localization",
-              "options/development-environment",
-              "options/user-identifier",
-              "options/jsonp-callback",
-              "options/vpn-proxy-detection"
+            "tab": "API Reference",
+            "groups": [
+              {
+                "group": "Data Lookup",
+                "pages": [
+                  "api-reference/v2/endpoint/data-lookup/geoip",
+                  "api-reference/v2/endpoint/data-lookup/ip",
+                  "api-reference/v2/endpoint/data-lookup/bulk-ip",
+                  "api-reference/v2/endpoint/data-lookup/asn",
+                  "api-reference/v2/endpoint/data-lookup/iban",
+                  "api-reference/v2/endpoint/data-lookup/bin",
+                  "api-reference/v2/endpoint/data-lookup/country",
+                  "api-reference/v2/endpoint/data-lookup/domain",
+                  "api-reference/v2/endpoint/data-lookup/free-get-ip-method"
+                ]
+              },
+              {
+                "group": "Risk Scoring",
+                "pages": [
+                  "api-reference/v2/endpoint/scoring/ip-reputation",
+                  "api-reference/v2/endpoint/scoring/email",
+                  "api-reference/v2/endpoint/scoring/phone",
+                  "api-reference/v2/endpoint/scoring/profanity",
+                  "api-reference/v2/endpoint/scoring/payment"
+                ]
+              },
+              {
+                "group": "Account Management",
+                "pages": [
+                  "api-reference/v2/endpoint/account/users/delete"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Knowledge Base",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "knowledge-base/getting-started/introduction"
+                ]
+              },
+              {
+                "group": "Account Management",
+                "pages": [
+                  "knowledge-base/account-management/webhooks",
+                  "knowledge-base/account-management/obtaining-api-key",
+                  "knowledge-base/account-management/protecting-your-api-key",
+                  "knowledge-base/account-management/enabling-2fa",
+                  "knowledge-base/account-management/manage-authorized-devices",
+                  "knowledge-base/account-management/upgrading-your-account",
+                  "knowledge-base/account-management/managing-your-subscription",
+                  "knowledge-base/account-management/downloading-invoices",
+                  "knowledge-base/account-management/account-deletion"
+                ]
+              },
+              {
+                "group": "Events & Alerts",
+                "pages": [
+                  "knowledge-base/events-and-alerts/overview",
+                  "knowledge-base/events-and-alerts/filtering",
+                  "knowledge-base/events-and-alerts/exporting-events",
+                  "knowledge-base/events-and-alerts/view-event-details"
+                ]
+              },
+              {
+                "group": "Monitoring Capabilities",
+                "pages": [
+                  "knowledge-base/monitoring-capabilities/subscription-usage-tracking",
+                  "knowledge-base/monitoring-capabilities/real-time-threat-monitoring"
+                ]
+              },
+              {
+                "group": "Blacklists",
+                "pages": [
+                  "knowledge-base/blacklists/overview"
+                ]
+              },
+              {
+                "group": "Custom Rules",
+                "pages": [
+                  "knowledge-base/custom-rules/overview",
+                  "knowledge-base/custom-rules/testing-custom-rules"
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "knowledge-base/integrations/overview",
+                  "knowledge-base/integrations/slack",
+                  "knowledge-base/integrations/zapier",
+                  "knowledge-base/integrations/ifttt",
+                  "knowledge-base/integrations/make",
+                  "knowledge-base/integrations/telegram",
+                  "knowledge-base/integrations/n8n"
+                ]
+              },
+              {
+                "group": "Affiliate Program",
+                "pages": [
+                  "knowledge-base/affiliates-program/becoming-affiliate-partner",
+                  "knowledge-base/affiliates-program/payout-settings"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Integration Guide",
+            "groups": [
+              {
+                "group": "Getting started",
+                "pages": [
+                  "integration-guide/timeline",
+                  "integration-guide/about-greip"
+                ]
+              },
+              {
+                "group": "Use cases",
+                "pages": [
+                  "integration-guide/use-cases/payment-fraud",
+                  "integration-guide/use-cases/chargeback-fraud",
+                  "integration-guide/use-cases/account-takeover",
+                  "integration-guide/use-cases/multi-accounting",
+                  "integration-guide/use-cases/fake-accounts",
+                  "integration-guide/use-cases/content-moderation",
+                  "integration-guide/use-cases/web-personalization",
+                  "integration-guide/use-cases/sms-fraud"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Packages & Libraries",
+            "groups": [
+              {
+                "group": "Packages & Libraries",
+                "pages": [
+                  "packages-and-libraries/list-of-packages-and-libraries",
+                  "packages-and-libraries/other-resources"
+                ]
+              }
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
-        "groups": [
+        "version": "API v1",
+        "tag": "Legacy",
+        "tabs": [
           {
-            "group": "Data Lookup",
-            "pages": [
-              "api-reference/endpoint/data-lookup/geoip",
-              "api-reference/endpoint/data-lookup/ip",
-              "api-reference/endpoint/data-lookup/bulk-ip",
-              "api-reference/endpoint/data-lookup/asn",
-              "api-reference/endpoint/data-lookup/iban",
-              "api-reference/endpoint/data-lookup/bin",
-              "api-reference/endpoint/data-lookup/country",
-              "api-reference/endpoint/data-lookup/domain",
-              "api-reference/endpoint/data-lookup/free-get-ip-method"
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Get Started",
+                "pages": [
+                  "introduction",
+                  "migration",
+                  "api-policy",
+                  "authentication",
+                  "https-support",
+                  "error-codes",
+                  "usage-limits",
+                  "docs-mcp-server"
+                ]
+              },
+              {
+                "group": "API Features",
+                "pages": [
+                  "options/customize-modules",
+                  "options/response-format",
+                  "options/localization",
+                  "options/development-environment",
+                  "options/user-identifier",
+                  "options/jsonp-callback",
+                  "options/vpn-proxy-detection"
+                ]
+              }
             ]
           },
           {
-            "group": "Risk Scoring",
-            "pages": [
-              "api-reference/endpoint/scoring/ip-reputation",
-              "api-reference/endpoint/scoring/email",
-              "api-reference/endpoint/scoring/phone",
-              "api-reference/endpoint/scoring/profanity",
-              "api-reference/endpoint/scoring/payment"
+            "tab": "API Reference",
+            "groups": [
+              {
+                "group": "Data Lookup",
+                "pages": [
+                  "api-reference/v1/endpoint/data-lookup/geoip",
+                  "api-reference/v1/endpoint/data-lookup/ip",
+                  "api-reference/v1/endpoint/data-lookup/bulk-ip",
+                  "api-reference/v1/endpoint/data-lookup/asn",
+                  "api-reference/v1/endpoint/data-lookup/iban",
+                  "api-reference/v1/endpoint/data-lookup/bin",
+                  "api-reference/v1/endpoint/data-lookup/country",
+                  "api-reference/v1/endpoint/data-lookup/domain",
+                  "api-reference/v1/endpoint/data-lookup/free-get-ip-method"
+                ]
+              },
+              {
+                "group": "Risk Scoring",
+                "pages": [
+                  "api-reference/v1/endpoint/scoring/ip-reputation",
+                  "api-reference/v1/endpoint/scoring/email",
+                  "api-reference/v1/endpoint/scoring/phone",
+                  "api-reference/v1/endpoint/scoring/profanity",
+                  "api-reference/v1/endpoint/scoring/payment"
+                ]
+              },
+              {
+                "group": "Account Management",
+                "pages": [
+                  "api-reference/v1/endpoint/account/users/delete"
+                ]
+              }
             ]
           },
           {
-            "group": "Account Management",
-            "pages": ["api-reference/endpoint/account/users/delete"]
-          }
-        ]
-      },
-      {
-        "tab": "Knowledge Base",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": ["knowledge-base/getting-started/introduction"]
-          },
-          {
-            "group": "Account Management",
-            "pages": [
-              "knowledge-base/account-management/webhooks",
-              "knowledge-base/account-management/obtaining-api-key",
-              "knowledge-base/account-management/protecting-your-api-key",
-              "knowledge-base/account-management/enabling-2fa",
-              "knowledge-base/account-management/manage-authorized-devices",
-              "knowledge-base/account-management/upgrading-your-account",
-              "knowledge-base/account-management/managing-your-subscription",
-              "knowledge-base/account-management/downloading-invoices",
-              "knowledge-base/account-management/account-deletion"
+            "tab": "Knowledge Base",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "knowledge-base/getting-started/introduction"
+                ]
+              },
+              {
+                "group": "Account Management",
+                "pages": [
+                  "knowledge-base/account-management/webhooks",
+                  "knowledge-base/account-management/obtaining-api-key",
+                  "knowledge-base/account-management/protecting-your-api-key",
+                  "knowledge-base/account-management/enabling-2fa",
+                  "knowledge-base/account-management/manage-authorized-devices",
+                  "knowledge-base/account-management/upgrading-your-account",
+                  "knowledge-base/account-management/managing-your-subscription",
+                  "knowledge-base/account-management/downloading-invoices",
+                  "knowledge-base/account-management/account-deletion"
+                ]
+              },
+              {
+                "group": "Events & Alerts",
+                "pages": [
+                  "knowledge-base/events-and-alerts/overview",
+                  "knowledge-base/events-and-alerts/filtering",
+                  "knowledge-base/events-and-alerts/exporting-events",
+                  "knowledge-base/events-and-alerts/view-event-details"
+                ]
+              },
+              {
+                "group": "Monitoring Capabilities",
+                "pages": [
+                  "knowledge-base/monitoring-capabilities/subscription-usage-tracking",
+                  "knowledge-base/monitoring-capabilities/real-time-threat-monitoring"
+                ]
+              },
+              {
+                "group": "Blacklists",
+                "pages": [
+                  "knowledge-base/blacklists/overview"
+                ]
+              },
+              {
+                "group": "Custom Rules",
+                "pages": [
+                  "knowledge-base/custom-rules/overview",
+                  "knowledge-base/custom-rules/testing-custom-rules"
+                ]
+              },
+              {
+                "group": "Integrations",
+                "pages": [
+                  "knowledge-base/integrations/overview",
+                  "knowledge-base/integrations/slack",
+                  "knowledge-base/integrations/zapier",
+                  "knowledge-base/integrations/ifttt",
+                  "knowledge-base/integrations/make",
+                  "knowledge-base/integrations/telegram",
+                  "knowledge-base/integrations/n8n"
+                ]
+              },
+              {
+                "group": "Affiliate Program",
+                "pages": [
+                  "knowledge-base/affiliates-program/becoming-affiliate-partner",
+                  "knowledge-base/affiliates-program/payout-settings"
+                ]
+              }
             ]
           },
           {
-            "group": "Events & Alerts",
-            "pages": [
-              "knowledge-base/events-and-alerts/overview",
-              "knowledge-base/events-and-alerts/filtering",
-              "knowledge-base/events-and-alerts/exporting-events",
-              "knowledge-base/events-and-alerts/view-event-details"
+            "tab": "Integration Guide",
+            "groups": [
+              {
+                "group": "Getting started",
+                "pages": [
+                  "integration-guide/timeline",
+                  "integration-guide/about-greip"
+                ]
+              },
+              {
+                "group": "Use cases",
+                "pages": [
+                  "integration-guide/use-cases/payment-fraud",
+                  "integration-guide/use-cases/chargeback-fraud",
+                  "integration-guide/use-cases/account-takeover",
+                  "integration-guide/use-cases/multi-accounting",
+                  "integration-guide/use-cases/fake-accounts",
+                  "integration-guide/use-cases/content-moderation",
+                  "integration-guide/use-cases/web-personalization",
+                  "integration-guide/use-cases/sms-fraud"
+                ]
+              }
             ]
           },
           {
-            "group": "Monitoring Capabilities",
-            "pages": [
-              "knowledge-base/monitoring-capabilities/subscription-usage-tracking",
-              "knowledge-base/monitoring-capabilities/real-time-threat-monitoring"
-            ]
-          },
-          {
-            "group": "Blacklists",
-            "pages": ["knowledge-base/blacklists/overview"]
-          },
-          {
-            "group": "Custom Rules",
-            "pages": [
-              "knowledge-base/custom-rules/overview",
-              "knowledge-base/custom-rules/testing-custom-rules"
-            ]
-          },
-          {
-            "group": "Integrations",
-            "pages": [
-              "knowledge-base/integrations/overview",
-              "knowledge-base/integrations/slack",
-              "knowledge-base/integrations/zapier",
-              "knowledge-base/integrations/ifttt",
-              "knowledge-base/integrations/make",
-              "knowledge-base/integrations/telegram",
-              "knowledge-base/integrations/n8n"
-            ]
-          },
-          {
-            "group": "Affiliate Program",
-            "pages": [
-              "knowledge-base/affiliates-program/becoming-affiliate-partner",
-              "knowledge-base/affiliates-program/payout-settings"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Integration Guide",
-        "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "integration-guide/timeline",
-              "integration-guide/about-greip"
-            ]
-          },
-          {
-            "group": "Use cases",
-            "pages": [
-              "integration-guide/use-cases/payment-fraud",
-              "integration-guide/use-cases/chargeback-fraud",
-              "integration-guide/use-cases/account-takeover",
-              "integration-guide/use-cases/multi-accounting",
-              "integration-guide/use-cases/fake-accounts",
-              "integration-guide/use-cases/content-moderation",
-              "integration-guide/use-cases/web-personalization",
-              "integration-guide/use-cases/sms-fraud"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Packages & Libraries",
-        "groups": [
-          {
-            "group": "Packages & Libraries",
-            "pages": [
-              "packages-and-libraries/list-of-packages-and-libraries",
-              "packages-and-libraries/other-resources"
+            "tab": "Packages & Libraries",
+            "groups": [
+              {
+                "group": "Packages & Libraries",
+                "pages": [
+                  "packages-and-libraries/list-of-packages-and-libraries",
+                  "packages-and-libraries/other-resources"
+                ]
+              }
             ]
           }
         ]
@@ -325,6 +525,66 @@
     {
       "source": "/packages-and-libraries/postman-collection",
       "destination": "/packages-and-libraries/other-resources"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/geoip",
+      "destination": "/api-reference/v1/endpoint/data-lookup/geoip"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/ip",
+      "destination": "/api-reference/v1/endpoint/data-lookup/ip"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/bulk-ip",
+      "destination": "/api-reference/v1/endpoint/data-lookup/bulk-ip"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/asn",
+      "destination": "/api-reference/v1/endpoint/data-lookup/asn"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/iban",
+      "destination": "/api-reference/v1/endpoint/data-lookup/iban"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/bin",
+      "destination": "/api-reference/v1/endpoint/data-lookup/bin"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/country",
+      "destination": "/api-reference/v1/endpoint/data-lookup/country"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/domain",
+      "destination": "/api-reference/v1/endpoint/data-lookup/domain"
+    },
+    {
+      "source": "/api-reference/endpoint/data-lookup/free-get-ip-method",
+      "destination": "/api-reference/v2/endpoint/data-lookup/free-get-ip-method"
+    },
+    {
+      "source": "/api-reference/endpoint/scoring/ip-reputation",
+      "destination": "/api-reference/v1/endpoint/scoring/ip-reputation"
+    },
+    {
+      "source": "/api-reference/endpoint/scoring/email",
+      "destination": "/api-reference/v1/endpoint/scoring/email"
+    },
+    {
+      "source": "/api-reference/endpoint/scoring/phone",
+      "destination": "/api-reference/v1/endpoint/scoring/phone"
+    },
+    {
+      "source": "/api-reference/endpoint/scoring/profanity",
+      "destination": "/api-reference/v1/endpoint/scoring/profanity"
+    },
+    {
+      "source": "/api-reference/endpoint/scoring/payment",
+      "destination": "/api-reference/v1/endpoint/scoring/payment"
+    },
+    {
+      "source": "/api-reference/endpoint/account/users/delete",
+      "destination": "/api-reference/v1/endpoint/account/users/delete"
     }
   ]
 }

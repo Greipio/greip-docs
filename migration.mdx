@@ -1,0 +1,179 @@
+---
+title: "Migrate from API v1 to v2"
+sidebarTitle: "Migration"
+description: "How API v2 differs from legacy v1 and a practical checklist to upgrade your integration."
+icon: "arrow-right-arrow-left"
+iconType: "duotone"
+---
+
+API **v2** is the recommended version of the Greip API. It uses the same dashboard API key and billing as v1, but different base URLs, routes, authentication rules, and JSON shapes. You can run v1 and v2 in parallel while you migrate endpoint by endpoint.
+
+<Note>
+  Use the version switcher at the top of these docs to compare **API v2** (default) with **API v1 (Legacy)** reference pages side by side.
+</Note>
+
+## Base URL
+
+| Version | Base URL | Notes |
+| ------- | -------- | ----- |
+| v1 (legacy) | `https://greipapi.com` | Legacy paths such as `/geoip`, `/lookup/ip` |
+| v2 (recommended) | `https://v2.greipapi.com` | Updated REST-style paths (see endpoint map below) |
+
+All v2 endpoint URLs in the [API Reference](/api-reference/v2/endpoint/data-lookup/geoip) use the v2 host.
+
+## Authentication
+
+| Topic | v1 | v2 |
+| ----- | -- | -- |
+| API key location | Query `key=`, JSON body `key`, or `Authorization: Bearer` | **`Authorization: Bearer` only** |
+| `key` in query or body | Works when the key is valid | Always **`invalid_params` (104)**, even if the key itself is valid. Remove `key` from the URL/body and use Bearer. |
+| Missing or wrong API key | **`invalid_key` (101)** | **`invalid_key` (101)** when authenticating with Bearer |
+
+Send the same key from your [dashboard](https://dashboard.greip.io/home):
+
+```http
+Authorization: Bearer <api_key>
+```
+
+See [Authentication](/authentication) for key safety practices.
+
+## Request shape
+
+| Topic | v1 | v2 |
+| ----- | -- | -- |
+| JSON / query naming | Mostly camelCase (`userID`, `countryCode`) | **snake_case** (`user_id`, `country_code`) |
+| Legacy aliases | N/A | Many v1 names still accepted temporarily during migration |
+| Resource IDs | Often query parameters (`ip=`, `email=`) | **Path parameters** where documented (`/lookup/ip/{ip}`, `/score/email/{email}`) |
+| Geo for caller IP | `GET /geoip` | `GET /geo/ip` (no `ip` argument) |
+| Bulk geo | `GET /lookup/ip/bulk` | `GET /geo/ip/bulk` |
+| IP scoring | `GET /lookup/ip/threats` | `GET /score/ip/{ip}` |
+| Profanity | `GET /scoring/profanity` | `POST /score/text` with JSON body `{ "text": "..." }` |
+| Payment fraud | `POST /scoring/payment` | `POST /score/payments` |
+| Delete user data | `DELETE /account/users/delete` | `DELETE /account/users` |
+
+Shared query options (`params`, `lang`, `format`, `mode`, `callback`, `source`, `user_id`) behave like v1 unless noted on the v2 endpoint page. See [Customize response modules](/options/customize-modules) and [Development environment](/options/development-environment).
+
+## Response envelope
+
+Success and error wrappers differ. Update any code that checks `response.status === "success"`.
+
+| Field | v1 | v2 |
+| ----- | -- | -- |
+| Outcome | `"status": "success"` or `"status": "error"` | `"success": true` or `"success": false` |
+| Timing | `executionTime` (integer, ms) | `execution_ms` |
+| Errors | `status`, `code`, `type`, `description` | `success` (false), `code`, `type`, `description` |
+
+**v2 success example:**
+
+```json
+{
+  "success": true,
+  "data": { },
+  "execution_ms": 12
+}
+```
+
+**v2 error example:**
+
+```json
+{
+  "success": false,
+  "code": 101,
+  "type": "invalid_key",
+  "description": "The API Key is missing or invalid."
+}
+```
+
+Error codes and types are the same across versions. See [Error codes](/error-codes).
+
+## Geo and IP lookup `data` (largest schema change)
+
+v1 returns a **flat** object (`countryCode`, `continentName`, `ipType`, optional modules at the top level). v2 returns **nested** objects:
+
+| v2 key | Purpose |
+| ------ | ------- |
+| `data.ip` | `address`, `version`, `numeric`, `bogon` |
+| `data.geo` | Continent, country, region, city, coordinates, postal |
+| `data.location`, `data.currency`, `data.asn`, `data.timezone`, `data.security`, `data.device` | Optional modules from `params` |
+| `data.custom_rules_applied` | Custom rules metadata |
+
+Security module (query `params=security`, response key **`security`**):
+
+| v1 field | v2 field |
+| -------- | -------- |
+| `isProxy` | `vpn_or_proxy` |
+| `proxyType` | `vpn_or_proxy_type` |
+| `isTor` | `tor` |
+| `isBot` | `bot` |
+| `isRelay` | `relay` |
+| `isHosting` | `hosting` |
+| `blacklisted` | `is_blacklisted` |
+
+**Bulk IP lookup:** v2 `data` is an object whose **keys are IP strings**; each value has the same shape as a single IP lookup.
+
+**Free Get-IP:** v2 `GET /ip` returns `data.ip` metadata (no auth). See the [Free Get-IP](/api-reference/v2/endpoint/data-lookup/free-get-ip-method) page.
+
+## Scoring and validation endpoints
+
+| Area | v1 behavior | v2 notes |
+| ---- | ----------- | -------- |
+| Email / phone | Flat fields, legacy validity flags | `risk_level`, `recommendation`, `reasons`, `rules`; path-based email/phone |
+| IP threats | Threat fields at top level | `score`, `risk_level`, `recommendation`, `rules` plus `security` |
+| BIN / IBAN | camelCase fields | snake_case; BIN includes `is_valid`, `reason` |
+| Payment | Similar fraud payload | Same business logic; snake_case body fields and `score/payments` URL |
+
+Use the matching v2 API Reference page for full request and response property lists.
+
+## Endpoint map (v1 path to v2)
+
+| v1 (legacy) | v2 (recommended) |
+| ----------- | ---------------- |
+| `GET /geoip` | `GET /geo/ip` |
+| `GET /lookup/ip` | `GET /lookup/ip/{ip}` |
+| `GET /lookup/ip/bulk` | `GET /geo/ip/bulk` |
+| `GET /lookup/asn` | `GET /lookup/asn/{asn}` |
+| `GET /lookup/iban` | `GET /lookup/iban/{iban}` |
+| `GET /lookup/bin` | `GET /lookup/bin/{bin}` |
+| `GET /lookup/country` | `GET /lookup/countries/{country_code}` |
+| `GET /lookup/domain` | `GET /lookup/domains/{domain}` |
+| `GET /lookup/ip/threats` | `GET /score/ip/{ip}` |
+| `GET /scoring/email` | `GET /score/email/{email}` |
+| `GET /scoring/phone` | `GET /score/phone/{phone}` |
+| `GET /scoring/profanity` | `POST /score/text` |
+| `POST /scoring/payment` | `POST /score/payments` |
+| `DELETE /account/users/delete` | `DELETE /account/users` |
+| (varies) | `GET /ip` (free caller IP, no auth) |
+
+## Migration checklist
+
+<Steps>
+  <Step title="Pick an endpoint">
+    Start with read-only traffic (for example GeoIP or IP lookup) before payment or deletion APIs.
+  </Step>
+  <Step title="Change base URL and path">
+    Point requests to `https://v2.greipapi.com` and the v2 path from the table above or API Reference.
+  </Step>
+  <Step title="Move authentication to Bearer">
+    Remove `key` from query strings and JSON bodies for v2 calls.
+  </Step>
+  <Step title="Use mode=test">
+    Set `mode=test` while you update parsers; v2 returns deterministic sample data in test mode like v1.
+  </Step>
+  <Step title="Update response parsing">
+    Check `success` instead of `status`, read `execution_ms`, and map nested `data` fields (geo/security/scoring).
+  </Step>
+  <Step title="Ship gradually">
+    Run v1 and v2 in parallel per route, compare responses in staging, then cut over and remove v1 calls.
+  </Step>
+</Steps>
+
+## What stays the same
+
+- Same Greip account, API key, plans, usage limits, and [custom rules](/knowledge-base/custom-rules/overview) behavior for equivalent endpoints.
+- Same error **codes** and **types** (only the success wrapper field name changes on v2).
+- Response formats (JSON, XML, CSV, Newline) and JSONP `callback` where supported on the endpoint.
+
+## Need help?
+
+- [Introduction](/introduction) and [API Reference](/api-reference/v2/endpoint/data-lookup/geoip) for v2.
+- [Community on Slack](https://join.slack.com/t/greip-community/shared_invite/zt-2sxdyaaj8-418mMcVlekO6sNhKOAGWpg) for integration questions.

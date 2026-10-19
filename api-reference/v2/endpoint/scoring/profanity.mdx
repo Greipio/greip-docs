@@ -1,0 +1,75 @@
+---
+title: "Profanity Detection"
+description: "This method helps safeguard your website or app by detecting offensive or inappropriate language in user inputs. By screening for profanity and other harmful content before it’s made public, you can maintain a positive user environment, protect your brand, and prevent abusive behavior on your platform.\n\nAPI v2 returns `risk_level` and `recommendation` for the submitted text (no legacy score-only or word-list fields)."
+api: "POST https://v2.greipapi.com/score/text"
+openapi: "openapi/v2.json POST /score/text"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceBodyFields from "/snippets/v2-service-body-fields.mdx";
+
+<V2Auth />
+
+
+`POST /score/text` with a JSON body (not a GET request).
+
+### JSON body
+
+<ParamField body="text" type="string" required placeholder="The text">
+  The text you want to filter.
+
+  Sample value: `This is a sample text without profanity!`
+</ParamField>
+
+<V2ServiceBodyFields />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "risk_level": "low",
+    "recommendation": "accept"
+  },
+  "execution_ms": 120
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="risk_level" type="string" required>
+      Overall profanity risk for the submitted text (`low`, `medium`, or `high`). Greip classifies matches into levels: the highest severity wins (risky phrases and words first, then medium-risk, then low-risk). A clean text returns `low`.
+    </ResponseField>
+    <ResponseField name="recommendation" type="string" required>
+      Suggested action (`accept`, `review`, or `reject`) derived from `risk_level`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+

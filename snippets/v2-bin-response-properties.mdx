@@ -1,0 +1,135 @@
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="bin" type="string" required>
+      The BIN/IIN digits from the request (up to 8 digits).
+    </ResponseField>
+    <ResponseField name="is_valid" type="boolean" required>
+      Whether the card number prefix passes structural validation. Use `is_blacklisted` for blocklist outcomes.
+    </ResponseField>
+    <ResponseField name="reason" type="string">
+      Human-readable validation message when `is_valid` is `false`, or `null` on success.
+    </ResponseField>
+    <ResponseField name="is_blacklisted" type="boolean" required>
+      Indicates if the BIN is on your blocklists or matched custom rules (Premium plans and above).
+    </ResponseField>
+    <ResponseField name="scheme" type="object">
+      Card scheme details when a known issuer is detected; `null` when the scheme is unknown.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="name" type="string" required>
+          Card scheme name (for example `Visa`, `Mastercard`).
+        </ResponseField>
+        <ResponseField name="is_luhn" type="boolean" required>
+          Whether Luhn checksum validation applies to this scheme.
+        </ResponseField>
+        <ResponseField name="is_prepaid" type="boolean">
+          Whether the card is prepaid when known; otherwise `null`.
+        </ResponseField>
+        <ResponseField name="is_commercial" type="boolean">
+          Whether the card is commercial when known; otherwise `null`.
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Card type (`debit`, `credit`, etc.) when known.
+        </ResponseField>
+        <ResponseField name="brand" type="string">
+          Card brand when known.
+        </ResponseField>
+        <ResponseField name="currency" type="string">
+          Card currency when known.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="detected_digits" type="string">
+      Issuer prefix digits used to detect the scheme.
+    </ResponseField>
+    <ResponseField name="syntax" type="object">
+      Card number formatting rules for the detected scheme.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="gaps" type="array" required>
+          Gap positions when grouping the card number.
+        </ResponseField>
+        <ResponseField name="lengths" type="array" required>
+          Allowed card number lengths.
+        </ResponseField>
+        <ResponseField name="code" type="object" required>
+          Security code metadata (for example CVV).
+          <Expandable title="properties" defaultOpen={true}>
+            <ResponseField name="name" type="string" required>
+              Code name (for example `CVC`, `CVV`).
+            </ResponseField>
+            <ResponseField name="size" type="integer" required>
+              Number of digits in the code.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="bank" type="object" required>
+      Issuing bank details when available.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="id" type="string">
+          Internal bank ID.
+        </ResponseField>
+        <ResponseField name="identifier" type="string">
+          Bank identifier code when available.
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Official bank name.
+        </ResponseField>
+        <ResponseField name="city" type="string">
+          Bank city.
+        </ResponseField>
+        <ResponseField name="url" type="string">
+          Bank website URL.
+        </ResponseField>
+        <ResponseField name="phone" type="string">
+          Bank contact phone.
+        </ResponseField>
+        <ResponseField name="logo" type="string">
+          Bank logo URL when available.
+        </ResponseField>
+        <ResponseField name="latitude" type="string">
+          Bank latitude when available.
+        </ResponseField>
+        <ResponseField name="longitude" type="string">
+          Bank longitude when available.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="country" type="object" required>
+      Country associated with the issuing bank.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="alpha2" type="string">
+          ISO 3166-1 alpha-2 country code.
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Country name.
+        </ResponseField>
+        <ResponseField name="code" type="string">
+          Country dialing code.
+        </ResponseField>
+        <ResponseField name="numeric" type="string">
+          Country numeric code.
+        </ResponseField>
+        <ResponseField name="emoji" type="string">
+          Country flag emoji.
+        </ResponseField>
+        <ResponseField name="continent" type="string">
+          Continent name.
+        </ResponseField>
+        <ResponseField name="language_code" type="string">
+          Primary language code (ISO 639-1).
+        </ResponseField>
+        <ResponseField name="language_native" type="string">
+          Native language name.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />

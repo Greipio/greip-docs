@@ -1,0 +1,21 @@
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+import V2GeoLookupDataFields from "/snippets/v2-geo-lookup-data-fields.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  Map of IP address strings to lookup results. Each key is one address from the `ips` query (for example `1.1.1.1`). Invalid or duplicate entries in `ips` are omitted.
+
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="&lt;ip_address&gt;" type="object" required>
+      Geo and optional modules for that IP. The property name is the literal IP string from your request.
+
+      <Expandable title="properties" defaultOpen={true}>
+        <V2GeoLookupDataFields />
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />

@@ -1,0 +1,134 @@
+---
+title: "Payment Fraud Detection"
+description: "Prevent financial losses and protect your business by deploying AI-powered modules that analyze transaction patterns in real-time.\n\nThis method helps identify and block suspicious activities, mitigating the risk of fraudulent payments and ensuring a secure experience for both you and your customers."
+api: "POST https://v2.greipapi.com/score/payments"
+openapi: "openapi/v2.json POST /score/payments"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceBodyFields from "/snippets/v2-service-body-fields.mdx";
+import V2PaymentRequestData from "/snippets/v2-payment-request-data.mdx";
+
+<V2Auth />
+
+
+Use `POST /score/payments`. The same request is supported at `POST /score/payment`.
+
+### JSON body
+
+<V2PaymentRequestData />
+
+<V2ServiceBodyFields />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Premium and above" color="purple" />
+
+  <ResponseExample>
+
+import V2PaymentSuccessExample from "/snippets/v2-payment-success-example.mdx";
+
+<V2PaymentSuccessExample />
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="score" type="float">
+      A risk-score from 0 to 100 indicating how risky this transaction is
+      (`10.5` means it's `10.5% risky` to pass this transaction).
+    </ResponseField>
+    <ResponseField name="risk_level" type="string" required>
+      Overall risk band (`low`, `medium`, or `high`).
+    </ResponseField>
+    <ResponseField name="recommendation" type="string" required>
+      Suggested action (`accept`, `review`, or `reject`) derived from the risk assessment.
+    </ResponseField>
+    <ResponseField name="rules" type="array" required>
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="id" type="string">
+          The Id of the detected rule. (`10.5` means it's `10.5% risky` to pass
+          this transaction).
+
+          Sample value: `PF10003`
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          The full description of the detected rule.
+
+          Sample value: `High purchase rate, according to "customer_id".`
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="rules_checked" type="integer" required>
+      Total rules checked against the transaction.
+    </ResponseField>
+    <ResponseField name="rules_detected" type="integer" required>
+      Total rules detected in the transaction.
+    </ResponseField>
+    <ResponseField name="velocity" type="object">
+      Present when `customer_id` is set in the payment `data` object or when request `user_id` is provided. Counts recent scored payment requests for the same merchant scope (website domain and/or merchant id).
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="ip_24h_count" type="integer">
+          Scored payment requests sharing `customer_ip` in the last 24 hours.
+        </ResponseField>
+        <ResponseField name="ip_7d_count" type="integer">
+          Scored payment requests sharing `customer_ip` in the last 7 days.
+        </ResponseField>
+        <ResponseField name="email_24h_count" type="integer">
+          Scored payment requests sharing `customer_email` in the last 24 hours.
+        </ResponseField>
+        <ResponseField name="email_7d_count" type="integer">
+          Scored payment requests sharing `customer_email` in the last 7 days.
+        </ResponseField>
+        <ResponseField name="phone_24h_count" type="integer">
+          Scored payment requests sharing `customer_phone` and the same country code (`customer_country`, `billing_country`, or `shipping_country`) in the last 24 hours.
+        </ResponseField>
+        <ResponseField name="phone_7d_count" type="integer">
+          Scored payment requests sharing `customer_phone` and the same country code in the last 7 days.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="custom_rules_applied" type="object">
+      The custom rules applied to this request, [learn
+      more](/knowledge-base/custom-rules/overview).
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="total" type="integer" required>
+          The total number of custom rules applied to this request.
+        </ResponseField>
+        <ResponseField name="rules" type="object" required>
+          The custom rules applied to this request, [learn
+          more](/knowledge-base/custom-rules/overview).
+          <Expandable title="properties" defaultOpen={true}>
+            <ResponseField name="id" type="string" required>
+              The rule ID as shown in the dashboard (e.g: `CR104`).
+            </ResponseField>
+            <ResponseField name="title" type="string" required>
+              The rule title you set when creating the rule.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+

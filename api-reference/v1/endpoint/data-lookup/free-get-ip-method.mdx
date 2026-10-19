@@ -1,0 +1,116 @@
+---
+title: "Free Get-IP"
+description: "This method allows you to retrieve the IP address of your visitors or users without the need for an account or API key in Greip.\n\nIt’s a quick and easy way to access IP information, making it ideal for basic integrations or when you need to capture user IPs with minimal setup."
+icon: "heart"
+iconType: "duotone"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+**Usage example**
+
+```
+https://greipapi.com/ip
+```
+
+<RequestExample>
+
+```bash cURL
+curl --request GET \
+  --url https://greipapi.com/ip
+```
+
+```python Python
+import requests
+
+url = "https://greipapi.com/ip"
+
+response = requests.request("GET", url)
+
+print(response.text)
+```
+
+```javascript Javascript
+const options = { method: "GET" };
+
+fetch("https://greipapi.com/ip", options)
+  .then((response) => response.json())
+  .then((response) => console.log(response))
+  .catch((err) => console.error(err));
+```
+
+```php PHP
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, [
+  CURLOPT_URL => "https://greipapi.com/ip",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "GET",
+]);
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"io/ioutil"
+)
+
+func main() {
+	url := "https://greipapi.com/ip"
+	req, _ := http.NewRequest("GET", url, nil)
+	res, _ := http.DefaultClient.Do(req)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	fmt.Println(res)
+	fmt.Println(string(body))
+}
+```
+
+```java Java
+HttpResponse<String> response = Unirest.get("https://greipapi.com/ip")
+  .asString();
+```
+
+</RequestExample>
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="No account needed" color="green" />
+
+  <ResponseExample>
+
+```json Success
+{
+  "data": "165.227.149.217",
+  "documentaion": "https://docs.greip.io",
+  "status": "success",
+  "executionTime": 0
+}
+```
+
+  </ResponseExample>
+</Panel>

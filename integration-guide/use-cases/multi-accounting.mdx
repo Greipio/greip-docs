@@ -14,7 +14,7 @@ Multi-accounting is a common problem in applications where users can create mult
 
 ### 1. IP Geolocation and Threat Intelligence
 
-Endpoint: [`/geoip`](/api-reference/endpoint/data-lookup/geoip), [`/lookup/ip`](/api-reference/endpoint/data-lookup/ip), [`/lookup/ip/threats`](/api-reference/endpoint/scoring/ip-reputation)
+Endpoint: [`/geo/ip`](/api-reference/v2/endpoint/data-lookup/geoip), [`/lookup/ip/{ip}`](/api-reference/v2/endpoint/data-lookup/ip), [`/score/ip/{ip}`](/api-reference/v2/endpoint/scoring/ip-reputation)
 
 **How it helps:**
 
@@ -24,7 +24,7 @@ Use the security module to check if the IP is associated with malicious activity
 
 ### 2. Device Fingerprinting
 
-Endpoint: [`/geoip`](/api-reference/endpoint/data-lookup/geoip) (with the device module)
+Endpoint: [`/geo/ip`](/api-reference/v2/endpoint/data-lookup/geoip) (with the device module)
 
 **How it helps:**
 
@@ -33,7 +33,7 @@ If multiple accounts are being created from the same device, it could indicate m
 
 ### 3. Email and Phone Validation
 
-Endpoints: [`/scoring/email`](/api-reference/endpoint/scoring/email), [`/scoring/phone`](/api-reference/endpoint/scoring/phone)
+Endpoints: [`/scoring/email`](/api-reference/v2/endpoint/scoring/email), [`/scoring/phone`](/api-reference/v2/endpoint/scoring/phone)
 
 **How it helps:**
 
@@ -43,7 +43,7 @@ Flag suspicious email domains or phone numbers associated with fraud.
 
 ### 4. Payment Fraud Detection
 
-Endpoint: [`/scoring/payment`](/api-reference/endpoint/scoring/payment)
+Endpoint: [`/score/payments`](/api-reference/v2/endpoint/scoring/payment)
 
 **How it helps:**
 
@@ -52,7 +52,7 @@ Identify if the same payment method is being used across multiple accounts.
 
 ### 5. ASN and BIN Lookup
 
-Endpoints: [`/lookup/asn`](/api-reference/endpoint/data-lookup/asn), [/lookup/bin](/api-reference/endpoint/data-lookup/bin)
+Endpoints: [`/lookup/asn`](/api-reference/v2/endpoint/data-lookup/asn), [/lookup/bin](/api-reference/v2/endpoint/data-lookup/bin)
 
 **How it helps:**
 
@@ -61,7 +61,7 @@ Validate credit card BINs to ensure they are not being reused fraudulently.
 
 ### 6. Profanity Detection
 
-Endpoint: [`/scoring/profanity`](/api-reference/endpoint/scoring/profanity)
+Endpoint: [`/score/text`](/api-reference/v2/endpoint/scoring/profanity)
 
 **How it helps:**
 
@@ -82,18 +82,18 @@ Combine Greip data with your application’s logic to detect patterns of multi-a
     number, and device information.
   </Step>
   <Step title="Step 2:">
-    Use Greip’s [`/geoip`](/api-reference/endpoint/data-lookup/geoip) and
-    [`/lookup/ip/threats`](/api-reference/endpoint/scoring/ip-reputation)
+    Use Greip’s [`/geo/ip`](/api-reference/v2/endpoint/data-lookup/geoip) and
+    [`/score/ip/{ip}`](/api-reference/v2/endpoint/scoring/ip-reputation)
     endpoints to check if the IP is high-risk (e.g., VPN, proxy, or Tor).
   </Step>
   <Step title="Step 3:">
     Validate the email using
-    [`/scoring/email`](/api-reference/endpoint/scoring/email) to ensure it’s
+    [`/scoring/email`](/api-reference/v2/endpoint/scoring/email) to ensure it’s
     valid, correct, and not disposable.
   </Step>
   <Step title="Step 4:">
     Validate the phone number using
-    [`/scoring/phone`](/api-reference/endpoint/scoring/phone) to ensure it’s
+    [`/scoring/phone`](/api-reference/v2/endpoint/scoring/phone) to ensure it’s
     legitimate and not disposable.
   </Step>
   <Step title="Step 5:">
@@ -101,7 +101,7 @@ Combine Greip data with your application’s logic to detect patterns of multi-a
     accounts in your system.
   </Step>
   <Step title="Step 6:">
-    Use [`/scoring/payment`](/api-reference/endpoint/scoring/payment) to analyze
+    Use [`/score/payments`](/api-reference/v2/endpoint/scoring/payment) to analyze
     payment details for signs of fraud.
   </Step>
   <Step title="Step 7:">

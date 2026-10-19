@@ -1,0 +1,48 @@
+---
+title: "IP Geolocation"
+description: "This API allows you to retrieve detailed geolocation information for a visitor’s or user’s IP address.\n\nBy using the IP Geolocation method, you can access data such as the user’s country, city, ISP, and more, enabling you to personalize user experiences, enhance security, and make data-driven decisions based on geographic insights."
+api: "GET https://v2.greipapi.com/geo/ip"
+openapi: "openapi/v2.json GET /geo/ip"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+
+<V2Auth />
+
+
+`GET /geo/ip` resolves the IP address of the current request and returns the same rich `data` object as [IP Lookup](/api-reference/v2/endpoint/data-lookup/ip) (geo, optional modules, and related fields). To look up a different address, use the IP in the path on `GET /lookup/ip/{ip}`, not a query parameter.
+
+### Query parameters
+
+<V2GeoQuery />
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+
+  <ResponseExample>
+
+import V2GeoSuccessExample from "/snippets/v2-geo-success-example.mdx";
+
+<V2GeoSuccessExample />
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2GeoDataResponseProperties from "/snippets/v2-geo-data-response-properties.mdx";
+
+<V2GeoDataResponseProperties />

@@ -6,16 +6,23 @@ icon: "file-xml"
 iconType: "duotone"
 ---
 
+import V2DocsAuthNote from "/snippets/v2-docs-auth-note.mdx";
+
 Our API provides flexibility in the format of the response, allowing you to customize the response format to best suit your needs. Whether you prefer `JSON`, `XML`, `CSV`, or `Newline` formats, we've got you covered.
 
-To change the format of the API response, simply add the format parameter to your API request and specify the desired format type. Please note that JSON is the default format, so there's no need to add this parameter if you want the response format to be in `JSON`.
+To change the format of the API response, add the `format` parameter to your API request and specify the desired format type. JSON is the default format, so you do not need this parameter for JSON responses.
 
-The available formats for the format parameter are: `JSON`, `XML`, `CSV`, and `Newline`.
+The available values for `format` are: `JSON`, `XML`, `CSV`, and `Newline`.
 
 ## Usage
 
-For example, if you want to retrieve data in XML format, you can use the following request URL:
+For example, to retrieve data in XML format:
 
+```bash cURL
+curl -G 'https://v2.greipapi.com/geo/ip' \
+  --data-urlencode 'params=location' \
+  --data-urlencode 'format=XML' \
+  -H 'Authorization: Bearer <api-key>'
 ```
-https://greipapi.com/geoip?key=1234567890&params=country_name&format=XML
-```
+
+<V2DocsAuthNote />

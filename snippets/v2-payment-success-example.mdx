@@ -1,0 +1,48 @@
+```json Success
+{
+  "success": true,
+  "data": {
+    "score": 82,
+    "risk_level": "high",
+    "recommendation": "review",
+    "rules": [
+      {
+        "id": "PF10003",
+        "description": "Customer IP Address is probably VPN/Proxy/Bot/Hosting/Cloud."
+      },
+      {
+        "id": "PF10004",
+        "description": "Customer Email Address is probably invalid or spam."
+      },
+      {
+        "id": "PF10001",
+        "description": "High purchase rate, according to `customer_ip`."
+      },
+      {
+        "id": "PF10002",
+        "description": "High purchase rate, according to `customer_id`."
+      },
+      {
+        "id": "PF10013",
+        "description": "Customer device might not be a real device (according to `customer_useragent`)."
+      },
+      {
+        "id": "PF10014",
+        "description": "Customer device is registered as a high-risk device (according to `customer_useragent`)."
+      }
+    ],
+    "rules_checked": 21,
+    "rules_detected": 6,
+    "velocity": {
+      "ip_24h_count": 4,
+      "ip_7d_count": 12,
+      "email_24h_count": 1,
+      "email_7d_count": 2,
+      "phone_24h_count": 0,
+      "phone_7d_count": 3
+    },
+    "custom_rules_applied": { "total": 0, "rules": [] }
+  },
+  "execution_ms": 5
+}
+```

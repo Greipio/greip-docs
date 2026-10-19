@@ -1,0 +1,98 @@
+---
+title: "Country Data"
+description: "This method allows you to retrieve detailed information about a country by providing its country code in the request.\n\nThe API returns valuable data, such as the country’s name, capital, population, region, and other relevant attributes, enabling you to enrich your applications with geographic context and enhance user experiences."
+api: "GET https://v2.greipapi.com/lookup/countries/{country_code}"
+openapi: "openapi/v2.json GET /lookup/countries/{country_code}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2CountryQuery from "/snippets/v2-country-query.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="country_code" type="string" required placeholder="The country code">
+  The `ISO 3166-1 alpha-2` format of the country code. [Learn more](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+
+  Sample value: `GB`
+</ParamField>
+
+### Query parameters
+
+<V2CountryQuery />
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Standard and above" color="green" />
+
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "geo": {
+      "continent": "North America",
+      "continent_code": "NA",
+      "continent_geo_name_id": 6255149,
+      "country": "United States",
+      "country_code": "US",
+      "country_geo_name_id": 6252001,
+      "capital": "Washington, D.C.",
+      "population": 331002651,
+      "phone": "1",
+      "is_eu": false,
+      "neighbours": "CA,MX,PM",
+      "tld": ".us"
+    },
+    "language": {
+      "name": "English",
+      "code": "en",
+      "native": "English"
+    },
+    "currency": {
+      "name": "United States Dollar",
+      "code": "USD",
+      "symbol": "$"
+    },
+    "flag": {
+      "emoji": "🇺🇸",
+      "unicode": "U+1F1FA U+1F1F8",
+      "png": {
+        "1000px": "https://greip.io/img/flags/png1000px/us.png",
+        "250px": "https://greip.io/img/flags/png250px/us.png",
+        "100px": "https://greip.io/img/flags/png100px/us.png"
+      },
+      "svg": "https://greip.io/img/flags/svg/us.svg"
+    },
+    "custom_rules_applied": { "total": 0, "rules": [] }
+  },
+  "execution_ms": 0
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2CountryResponseProperties from "/snippets/v2-country-response-properties.mdx";
+
+<V2CountryResponseProperties />
+

@@ -1,0 +1,243 @@
+<ParamField
+  body="data"
+  type="object"
+  placeholder="Data of the transaction"
+  required
+>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="action" type="string">
+      The action your customer try to implement.
+
+      Accepts: `purchase`, `deposit`, or `withdrawal`.
+    </ResponseField>
+
+    <ResponseField name="website_domain" type="string">
+      The domain name of the website the customer trying to purchase from.
+
+      Sample value: `domain.com`
+    </ResponseField>
+
+    <ResponseField name="website_name" type="string">
+      The name of the website the customer trying to purchase from.
+
+      Sample value: `Nike Store, California`
+    </ResponseField>
+
+    <ResponseField name="merchant_id" type="string|integer">
+      If your a service provider with "sub-websites" (like Shopify), then provide a unique identification code indicating the website the customer trying to purchase from.
+
+      Sample values: `12330098`, `01as-aowq-029jd`, or `abcdefg`.
+    </ResponseField>
+
+    <ResponseField name="shipment_id" type="string|integer|number">
+      The identification code of the shipment.
+    </ResponseField>
+
+    <ResponseField name="transaction_id" type="string|integer|number">
+      The identification code of the transaction in your system.
+    </ResponseField>
+
+    <ResponseField name="transaction_amount" type="string|number|float">
+      The total amount of the transaction.
+    </ResponseField>
+
+    <ResponseField name="transaction_currency" type="string">
+      The currency in which the customer pay with.
+
+      Sample value: `GBP`
+    </ResponseField>
+
+    <ResponseField name="cart_items" type="string|integer|number">
+      <Expandable title="properties">
+        <ResponseField name="item_id" type="string|number|integer" />
+        <ResponseField name="item_name" type="string" />
+        <ResponseField name="item_quantity" type="string|integer" />
+        <ResponseField name="item_price" type="string|float|integer" />
+        <ResponseField name="item_category_id" type="string|number|integer" />
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="is_digital_products" type="boolean">
+      Set this to true if the customer is purchasing a digital product.
+    </ResponseField>
+
+    <ResponseField name="coupon" type="string">
+      The promo code used by the customer to complete the checkout.
+    </ResponseField>
+
+    <ResponseField name="customer_id" type="string|integer">
+      The identification number of the customer in your system.
+    </ResponseField>
+
+    <ResponseField name="customer_firstname" type="string">
+      The first name of the customer.
+    </ResponseField>
+
+    <ResponseField name="customer_lastname" type="string">
+      The last name of the customer (Family Name).
+    </ResponseField>
+
+    <ResponseField name="customer_pob" type="string">
+      The Place of Birth of the customer.
+    </ResponseField>
+
+    <ResponseField name="customer_ip" type="string">
+      The IP address of the customer.
+    </ResponseField>
+
+    <ResponseField name="customer_country" type="string">
+      The `ISO 3166-1 alpha-2` code format of the country where the customer live. [Learn more](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+    </ResponseField>
+
+    <ResponseField name="customer_region" type="string">
+      The name of the region where the customer live.
+    </ResponseField>
+
+    <ResponseField name="customer_city" type="string">
+      The name of the city where the customer live.
+    </ResponseField>
+
+    <ResponseField name="customer_zip" type="string|integer|number">
+      The name of the zip code of customer location.
+    </ResponseField>
+
+    <ResponseField name="customer_street" type="string">
+      The "address line 1" of the customer.
+    </ResponseField>
+
+    <ResponseField name="customer_street2" type="string">
+      The "address line 2" of the customer.
+    </ResponseField>
+
+    <ResponseField name="customer_latitude" type="integer|float">
+      The customer latitude on the map (GPS Coordinates).
+    </ResponseField>
+
+    <ResponseField name="customer_longitude" type="integer|float">
+      The customer longitude on the map (GPS Coordinates).
+    </ResponseField>
+
+    <ResponseField name="customer_device_id" type="string|integer|number">
+      The device identification code of the customer.
+    </ResponseField>
+
+    <ResponseField name="customer_phone" type="string|integer|number">
+      The phone number of the customer (international format).
+    </ResponseField>
+
+    <ResponseField name="customer_registration_date" type="integer">
+      The registration date of the customer (UNIX Timestamp).
+    </ResponseField>
+
+    <ResponseField name="customer_balance" type="string|integer|float">
+      If you offer a Wallet feature in your website, then pass the user balance to this pararmeter.
+    </ResponseField>
+
+    <ResponseField name="customer_dob" type="string">
+      The customer's date of birth.
+
+      Sample value: '1985-12-27`
+    </ResponseField>
+
+    <ResponseField name="customer_email" type="string">
+      The email address of the customer.
+    </ResponseField>
+
+    <ResponseField name="customer_2fa" type="boolean">
+      Set this to true if the customer has 2FA enabled in his/her account.
+    </ResponseField>
+
+    <ResponseField name="customer_useragent" type="string">
+      Pass the [User Agent](https://en.wikipedia.org/wiki/User_agent) of the customer to this parameter.
+    </ResponseField>
+
+    <ResponseField name="shipping_country" type="string">
+      The shipping country code of the customer (in `ISO 3166-1 alpha-2` format).
+    </ResponseField>
+
+    <ResponseField name="shipping_region" type="string">
+      The shipping region name of the customer.
+    </ResponseField>
+
+    <ResponseField name="shipping_city" type="string">
+      The shipping city name of the customer.
+    </ResponseField>
+
+    <ResponseField name="shipping_zip" type="string|number|integer">
+      The zip code of the customer's shipping address.
+    </ResponseField>
+
+    <ResponseField name="shipping_street" type="string">
+      The shipping "address 1" of the customer.
+    </ResponseField>
+
+    <ResponseField name="shipping_street2" type="string">
+      The shipping "address 2" of the customer.
+    </ResponseField>
+
+    <ResponseField name="shipping_latitude" type="integer|number|float">
+      The latitude of the customer's shipping address (GPS Coordinates).
+    </ResponseField>
+
+    <ResponseField name="shipping_longitude" type="integer|number|float">
+      The longitude of the customer's shipping address (GPS Coordinates).
+    </ResponseField>
+
+    <ResponseField name="billing_country" type="string">
+      The billing country code of the customer (in `ISO 3166-1 alpha-2` format).
+    </ResponseField>
+
+    <ResponseField name="billing_region" type="string">
+      The billing region name of the customer.
+    </ResponseField>
+
+    <ResponseField name="billing_city" type="string">
+      The billing city name of the customer.
+    </ResponseField>
+
+    <ResponseField name="billing_zip" type="string|number|integer">
+      The zip code of the customer's billing address.
+    </ResponseField>
+
+    <ResponseField name="billing_street" type="string">
+      The billing "address 1" of the customer.
+    </ResponseField>
+
+    <ResponseField name="billing_street2" type="string">
+      The billing "address 2" of the customer.
+    </ResponseField>
+
+    <ResponseField name="billing_latitude" type="integer|float">
+      The latitude of the customer's billing address (GPS Coordinates).
+    </ResponseField>
+
+    <ResponseField name="billing_longitude" type="integer|float">
+      The longitude of the customer's billing address (GPS Coordinates).
+    </ResponseField>
+
+    <ResponseField name="payment_type" type="string">
+      The payment method used to complete this transaction.
+
+      Accepted values: `cards`, `cards_mada`, `applepay`, `stcpay`, `bank`, `crypto`, `wallet`, or `cod`.
+    </ResponseField>
+
+    <ResponseField name="card_name" type="string">
+      The name on the card (Cardholder Name).
+    </ResponseField>
+
+    <ResponseField name="card_number" type="string|number|integer">
+      The card number (min: 6 digits).
+    </ResponseField>
+
+    <ResponseField name="card_expiry" type="string">
+      The expiry date of the customer debit/credit card.
+
+      Sample value: 29/05
+    </ResponseField>
+
+    <ResponseField name="cvv_result" type="boolean">
+      Set this to true if the customer passed the CVV/CSV verification process.
+    </ResponseField>
+
+  </Expandable>
+</ParamField>

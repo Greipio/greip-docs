@@ -1,0 +1,173 @@
+---
+title: "Email Scoring"
+description: "This method provides an additional layer of validation for your system. While validating email syntax is important, it is not sufficient.\n\nThis method goes beyond syntax validation by checking the domain's validity, the availability of the Mail Service, detecting Disposable Email (Temporary Emails), etc. By utilising this method, you can ensure a more thorough validation process for email addresses."
+api: "GET https://v2.greipapi.com/score/email/{email}"
+openapi: "openapi/v2.json GET /score/email/{email}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+import DomainFields from "/snippets/domain-fields.mdx";
+import V2EmailScoringRuleIds from "/snippets/v2-email-scoring-rule-ids.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="email" type="string" required placeholder="Email address">
+  The email you want to validate.
+
+  Expected values: an email address
+
+  Sample value: `name@domain.com`
+</ParamField>
+
+### Query parameters
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Premium and above" color="purple" />
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "is_valid": false,
+    "is_free": false,
+    "is_role_based": true,
+    "is_educational": false,
+    "is_disposable": false,
+    "is_blacklisted": false,
+    "email": "test@dangerous-domain.com",
+    "domain": {
+      "name": "dangerous-domain.com",
+      "is_dangerous": true,
+      "is_spf": false,
+      "is_dmarc": false,
+      "is_dkim": false,
+      "is_mx": false,
+      "is_bimi": false,
+      "created_at": "2025-02-05",
+      "is_new": true,
+      "domain_age_days": 45,
+      "has_website": true,
+      "mx_provider_class": "custom"
+    },
+    "custom_rules_applied": {
+      "total": 0,
+      "rules": []
+    },
+    "risk_level": "high",
+    "recommendation": "reject",
+    "reasons": [
+      "Email domain is considered dangerous."
+    ],
+    "rules": [
+      {
+        "id": "EMAIL_DANGEROUS_DOMAIN",
+        "description": "Email domain is considered dangerous."
+      }
+    ]
+  },
+  "execution_ms": 1
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="email" type="string" required>
+      The email address that was scored.
+    </ResponseField>
+    <ResponseField name="risk_level" type="string" required>
+      Overall risk band for the address (`low`, `medium`, or `high`). Use this with `recommendation` and `reasons` for fraud decisions, not `is_valid`.
+    </ResponseField>
+    <ResponseField name="recommendation" type="string" required>
+      Suggested action (`accept`, `review`, or `reject`) derived from the risk assessment.
+    </ResponseField>
+    <ResponseField name="reasons" type="array" required>
+      Human-readable strings explaining elevated risk. Empty when risk is low. Populated when `risk_level` is not `low`.
+    </ResponseField>
+    <ResponseField name="rules" type="array" required>
+      <V2EmailScoringRuleIds />
+    </ResponseField>
+    <ResponseField name="is_free" type="boolean" required>
+      Indicates whether the email address is from a free email service provider.
+    </ResponseField>
+    <ResponseField name="is_role_based" type="boolean" required>
+      Indicates whether the email address is a role-based email address. Role-based email addresses are those that are associated with a particular role or group, such as `admin`, `support`, `info`, etc.
+    </ResponseField>
+    <ResponseField name="is_educational" type="boolean" required>
+      Indicates whether the email address is an educational email address.
+    </ResponseField>
+    <ResponseField name="is_valid" type="boolean" required>
+      Whether the address passes syntax and structure checks only. It does not indicate overall safety or fraud risk. Use `risk_level`, `recommendation`, and `reasons` for risk outcomes.
+    </ResponseField>
+    <ResponseField name="is_disposable" type="boolean" required>
+      Indicates whether the email address is a disposable email address (also known as Temporary Email Addresses).
+    </ResponseField>
+    <ResponseField name="is_blacklisted" type="boolean" required>
+      Indicates if the email/domain is blacklisted due to applying [custom
+      rules](/knowledge-base/custom-rules/overview) or were found in one of your
+      blacklists.
+    </ResponseField>
+
+    <ResponseField name="domain" type="object">
+        The information associated with the domain name of the email address.
+      <Expandable title="properties" defaultOpen={true}>
+        <DomainFields />
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="custom_rules_applied" type="object">
+      The custom rules applied to this request, [learn
+      more](/knowledge-base/custom-rules/overview).
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="total" type="integer" required>
+          The total number of custom rules applied to this request.
+        </ResponseField>
+        <ResponseField name="rules" type="object" required>
+          The custom rules applied to this request, [learn
+          more](/knowledge-base/custom-rules/overview).
+          <Expandable title="properties" defaultOpen={true}>
+            <ResponseField name="id" type="string" required>
+              The rule ID as shown in the dashboard (e.g: `CR104`).
+            </ResponseField>
+            <ResponseField name="title" type="string" required>
+              The rule title you set when creating the rule.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+

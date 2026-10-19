@@ -8,7 +8,7 @@ iconType: "duotone"
 
 Although we strive to provide a seamless and reliable experience, sometimes things can go wrong. In the event of an error, our API provides an error response that contains helpful information to assist you in resolving the issue.
 
-The error response includes the `status`, `code`, `type`, and `description` of the error. The status indicates the general category of the error, while the `code` and `type` provide more specific information about the error.
+The error response includes `success` (always `false` on API v2), `code`, `type`, and `description`. The `code` and `type` identify the error; API v1 (Legacy) uses a string `status` field set to `error` instead of `success`.
 
 The `description` property provides a detailed explanation of the error and may include suggestions for resolving the issue.
 
@@ -16,7 +16,7 @@ Here is an example of an error response:
 
 ```json
 {
-  "status": "error",
+  "success": false,
   "code": 101,
   "type": "invalid_key",
   "description": "The API Key is missing or invalid."

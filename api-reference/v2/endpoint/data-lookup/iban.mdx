@@ -1,0 +1,181 @@
+---
+title: "IBAN Validation"
+description: "This method enables you to validate International Bank Account Numbers (IBANs) and obtain essential information about the country associated with each IBAN.\n\nBy using this API, you can ensure that the IBANs are formatted correctly and gain insights into the banking institution, enhancing security and accuracy in financial transactions."
+api: "GET https://v2.greipapi.com/lookup/iban/{iban}"
+openapi: "openapi/v2.json GET /lookup/iban/{iban}"
+---
+
+import { Availability } from "/snippets/Availability.jsx";
+import { MCPCallout } from "/snippets/MCPCallout.jsx";
+
+import V2Auth from "/snippets/v2-auth.mdx";
+import V2ServiceQuery from "/snippets/v2-service-query.mdx";
+import V2GeoQuery from "/snippets/v2-geo-query.mdx";
+
+<V2Auth />
+
+
+### Path parameters
+
+<ParamField path="iban" type="string" required placeholder="The IBAN">
+  The International Bank Account Number (IBAN) you want to validate.
+
+  Sample value: `BE71096123456769`, or `BE71 0961 2345 6769`.
+</ParamField>
+
+### Query parameters
+
+<V2ServiceQuery />
+
+<Panel>
+  <MCPCallout />
+  
+  <Availability plan="Premium and above" color="purple" />
+
+
+  <ResponseExample>
+
+```json Success
+
+{
+  "success": true,
+  "data": {
+    "is_valid": true,
+    "iban": "BE71096123456769",
+    "formats": {
+      "machine": "BE71096123456769",
+      "human": "BE71 0961 2345 6769",
+      "obfuscated": "BE** **** **** 6769"
+    },
+    "country": {
+      "name": "Belgium",
+      "iana": "be",
+      "iso3166": "BE",
+      "currency": "EUR",
+      "central_bank": {
+        "url": "http://www.nbb.be/",
+        "name": "National Bank of Belgium"
+      },
+      "membership": "eu_member",
+      "is_eu": true,
+      "length": 16,
+      "is_sepa": true,
+      "swift_official": true
+    },
+    "bank": {
+      "identifier": "GEBABEBB",
+      "name": "BNP Paribas Fortis",
+      "short_name": null,
+      "branch_code": null,
+      "bban": null
+    }
+  },
+  "execution_ms": 1
+}
+
+```
+
+import V2ResponseErrorInvalidKey from "/snippets/v2-response-error-invalid-key.mdx";
+
+<V2ResponseErrorInvalidKey />
+
+  </ResponseExample>
+</Panel>
+
+### Response properties
+
+import V2EnvelopeSuccess from "/snippets/v2-envelope-success.mdx";
+import V2EnvelopeExecutionMs from "/snippets/v2-envelope-execution-ms.mdx";
+
+<V2EnvelopeSuccess />
+
+<ResponseField name="data" type="object" required>
+  <Expandable title="properties" defaultOpen={true}>
+    <ResponseField name="is_valid" type="boolean" required>
+      A boolean value that you can rely on to determine if the IBAN is valid or not.
+    </ResponseField>
+    <ResponseField name="iban" type="string" required>
+      The IBAN value from the request.
+    </ResponseField>
+    <ResponseField name="formats" type="object" required>
+      <Expandable title="properties" defaultOpen={true}>
+          <ResponseField name="machine" type="string" required>
+            Machine format of the IBAN.
+          </ResponseField>
+          <ResponseField name="human" type="string" required>
+            Human-readable format of the IBAN.
+          </ResponseField>
+          <ResponseField name="obfuscated" type="string" required>
+            Obfuscated format of the IBAN.
+          </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="country" type="object" required>
+      <Expandable title="properties" defaultOpen={true}>
+          <ResponseField name="name" type="string" required>
+            Country name where the issuing bank is located.
+          </ResponseField>
+          <ResponseField name="iana" type="string">
+            IANA country identifier when available.
+          </ResponseField>
+          <ResponseField name="iso3166" type="string">
+            Country code in ISO 3166-1 alpha-2 format when available.
+          </ResponseField>
+          <ResponseField name="currency" type="string" required>
+            Currency of the country.
+          </ResponseField>
+          <ResponseField name="central_bank" type="object" required>
+            <Expandable title="properties" defaultOpen={true}>
+              <ResponseField name="name" type="string">
+                The name of the central bank of the issuing country.
+              </ResponseField>
+              <ResponseField name="url" type="string">
+                The URL of the central bank of the issuing country.
+              </ResponseField>
+            </Expandable>
+          </ResponseField>
+          <ResponseField name="membership" type="string" required>
+            Membership type of the bank.
+          </ResponseField>
+          <ResponseField name="is_eu" type="boolean" required>
+            Determines whether the user is located within the European Union (EU) and is relevant for processing transactions or validations specific to EU countries.
+          </ResponseField>
+          <ResponseField name="length" type="integer">
+            IBAN length in this country when known.
+          </ResponseField>
+          <ResponseField name="example_iban" type="string">
+            Example IBAN for the country when available.
+          </ResponseField>
+          <ResponseField name="is_sepa" type="boolean" required>
+            Indicates whether the IBAN belongs to a country participating in the Single Euro Payments Area (SEPA)
+          </ResponseField>
+          <ResponseField name="swift_official" type="boolean" required>
+            Typically indicates whether the IBAN corresponds to an official institution or entity that is part of the SWIFT network, which facilitates international financial transactions.
+          </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="bank" type="object" required>
+      Issuing bank details when available.
+      <Expandable title="properties" defaultOpen={true}>
+        <ResponseField name="identifier" type="string">
+          Bank identifier (BIC/SWIFT) when available.
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Bank name.
+        </ResponseField>
+        <ResponseField name="short_name" type="string">
+          Short bank name when available.
+        </ResponseField>
+        <ResponseField name="branch_code" type="string">
+          Branch code when available.
+        </ResponseField>
+        <ResponseField name="bban" type="string">
+          Basic Bank Account Number segment when available.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<V2EnvelopeExecutionMs />
+
