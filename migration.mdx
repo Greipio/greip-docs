@@ -12,6 +12,42 @@ API **v2** is the recommended version of the Greip API. It uses the same dashboa
   Use the version switcher at the top of these docs to compare **API v2** (default) with **API v1 (Legacy)** reference pages side by side.
 </Note>
 
+## Why migrate to v2?
+
+v2 is the default in these docs and the recommended target for new and existing integrations. You keep the same Greip account, API key, plans, and usage limits; you point traffic at `https://v2.greipapi.com` and update how you authenticate and parse responses.
+
+### Response time and observability
+
+v2 is built for low-latency production traffic, including high-volume geo and scoring on checkout, signup, and login flows.
+
+Every successful v2 response includes **`execution_ms`**, so you can measure Greip processing time per request and compare v1 vs v2 in your own dashboards. Run both versions in staging with `mode=test` before you cut over.
+
+### Richer data for fraud and geo decisions
+
+v2 responses expose more structure and decision-ready fields than the flat v1 geo object:
+
+| Area | What you gain on v2 |
+| ---- | ------------------- |
+| Geo / IP lookup | Nested `data.ip` (including **`bogon`**) and `data.geo`; optional modules (`security`, `device`, `asn`, and others) from `params` |
+| Custom rules | **`custom_rules_applied`** on geo lookups so you can see which dashboard rules fired |
+| Security module | Clear snake_case flags such as **`vpn_or_proxy`**, **`tor`**, **`bot`**, **`relay`**, **`hosting`**, **`is_blacklisted`** |
+| Email / phone / IP scoring | **`risk_level`**, **`recommendation`**, **`reasons`**, and **`rules`** instead of legacy validity-only flags |
+| Domain lookup | Fields such as **`is_disposable`** and **`is_forwarding`** (also surfaced in email scoring where relevant) |
+| BIN / IBAN | Validation helpers such as **`is_valid`** and **`reason`** on BIN lookup |
+| Caller IP | **`GET /ip`** returns caller IP metadata with **no API key** (see [Free Get-IP](/api-reference/v2/endpoint/data-lookup/free-get-ip-method)) |
+
+### Clearer, more secure API design
+
+- **Bearer-only authentication** keeps keys out of query strings, server access logs, and referrer headers.
+- **Path-based resources** (`/lookup/ip/{ip}`, `/score/email/{email}`) match common REST client patterns and OpenAPI tooling.
+- **Consistent JSON**: snake_case fields and a boolean **`success`** flag make parsing and SDK generation straightforward.
+
+### Long-term support
+
+New API improvements and documentation focus on v2. Legacy v1 remains available for existing integrations, but upgrading now avoids a larger migration later and lets you use the latest response fields and routes described in the [API Reference](/api-reference/v2/endpoint/data-lookup/geoip).
+
+The sections below cover exact URL, auth, and field mappings for your upgrade.
+
 ## Base URL
 
 | Version | Base URL | Notes |
