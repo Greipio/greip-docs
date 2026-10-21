@@ -130,6 +130,12 @@
         <ResponseField name="number" type="string" required>
           Autonomous System Number (for example `AS15169`).
         </ResponseField>
+        <ResponseField name="cidr" type="string | null" required>
+          Network prefix in CIDR notation that contains the looked-up IP for the
+          resolved ASN, using the longest (most specific) match when several apply
+          (for example `8.8.8.0/24`). `null` when no such prefix is returned for
+          this IP and ASN.
+        </ResponseField>
         <ResponseField name="name" type="string" required>
           Name of the ASN.
         </ResponseField>

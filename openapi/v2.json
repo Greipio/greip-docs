@@ -69,7 +69,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoIpLookupSuccess"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -224,7 +231,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeoIpLookupSuccess"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -836,6 +850,83 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "GeoAsnModule": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "description": "Autonomous System Number (for example AS15169).",
+            "example": "AS15169"
+          },
+          "cidr": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Longest matching CIDR block for the looked-up IP on the resolved ASN, or null when none matches.",
+            "example": "8.8.8.0/24"
+          },
+          "name": {
+            "type": "string"
+          },
+          "org": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "GeoLookupData": {
+        "type": "object",
+        "description": "Geo/IP lookup payload (modules depend on params).",
+        "properties": {
+          "ip": {
+            "type": "object"
+          },
+          "geo": {
+            "type": "object"
+          },
+          "asn": {
+            "$ref": "#/components/schemas/GeoAsnModule"
+          }
+        }
+      },
+      "GeoIpLookupSuccess": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "execution_ms"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/GeoLookupData"
+          },
+          "execution_ms": {
+            "type": "integer",
+            "example": 42
+          }
+        }
       }
     }
   }
