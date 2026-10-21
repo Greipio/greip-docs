@@ -6,6 +6,9 @@ api: "GET /lookup/ip/bulk"
 
 import { Availability } from "/snippets/Availability.jsx";
 import { MCPCallout } from "/snippets/MCPCallout.jsx";
+import V1DeprecationWarning from "/snippets/v1-deprecation-warning.mdx";
+
+
 
 <Warning>
   You can lookup upto 10 IP addresses using this method. Otherwise, you will get
@@ -100,6 +103,8 @@ For more information please refer to [JSONP Callback](/options/jsonp-callback).
 </ParamField>
 
 <Panel>
+  <V1DeprecationWarning />
+  
   <MCPCallout />
 
   <Availability plan="Standard and above" color="green" />

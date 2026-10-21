@@ -6,6 +6,9 @@ api: "DELETE /account/users/delete"
 
 import { Availability } from "/snippets/Availability.jsx";
 import { MCPCallout } from "/snippets/MCPCallout.jsx";
+import V1DeprecationWarning from "/snippets/v1-deprecation-warning.mdx";
+
+
 
 <Warning>
   **This action cannot be undone**, all deleted data will be deleted immediately
@@ -24,6 +27,8 @@ import { MCPCallout } from "/snippets/MCPCallout.jsx";
 </ParamField>
 
 <Panel>
+  <V1DeprecationWarning />
+  
   <MCPCallout />
   
   <Availability plan="Standard and above" color="green" />
