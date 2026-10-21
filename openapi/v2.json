@@ -20,7 +20,8 @@
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules."
           },
           {
             "name": "lang",
@@ -54,6 +55,13 @@
           },
           {
             "name": "source",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "amount",
             "in": "query",
             "schema": {
               "type": "string"
@@ -97,14 +105,16 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Comma-separated IPv4 or IPv6 addresses (max 159 characters raw). Duplicates and invalid entries are skipped; at least one valid IP required."
           },
           {
             "name": "params",
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules."
           },
           {
             "name": "lang",
@@ -138,6 +148,13 @@
           },
           {
             "name": "source",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "amount",
             "in": "query",
             "schema": {
               "type": "string"
@@ -182,7 +199,8 @@
             "in": "query",
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules."
           },
           {
             "name": "lang",
@@ -216,6 +234,13 @@
           },
           {
             "name": "source",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "amount",
             "in": "query",
             "schema": {
               "type": "string"
@@ -267,7 +292,8 @@
             "required": false,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Optional modules: language, flag, currency. Base geo object is always returned."
           },
           {
             "name": "format",

@@ -20,7 +20,7 @@ import V2GeoQuery from "/snippets/v2-geo-query.mdx";
 <ParamField query="ips" type="string" required placeholder="Comma separated IP addresses">
   The ips command is used to specify the IP addresses you want to look up.
 
-  Expected values: comma separated IP addresses (IPv4 or IPv6)
+  Expected values: comma separated IP addresses (IPv4 or IPv6). The raw query value is limited to 159 characters. Duplicate and invalid entries are skipped; at least one valid IP is required.
 
   Sample value: `1.1.1.1,2.2.2.2`
 </ParamField>

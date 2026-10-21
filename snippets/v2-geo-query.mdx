@@ -1,7 +1,9 @@
 <ParamField query="params" type="string" placeholder="The modules you want to use">
-  The params command can be used to specify the required modules you want to get in the response.
+  The params command can be used to specify optional response modules. Basic `ip` and `geo` fields are always included.
 
-  Expected values: `security`, `currency`, `timezone`, `location`, and/or `device`
+  Recognized module names: `security`, `currency`, `timezone`, `location`, and/or `device`.
+
+  Unrecognized tokens are accepted but do not add modules.
 
   Sample value: `security,timezone,currency`
 
@@ -22,4 +24,8 @@
   Expected values: any name that can be used as a function name in Javascript, e.g: `myFunctionName`.
 
   For more information please refer to [JSONP callback](/options/jsonp-callback).
+</ParamField>
+
+<ParamField query="amount" type="string" placeholder="Amount">
+  Optional amount string used by usage and rate-limit gates.
 </ParamField>
