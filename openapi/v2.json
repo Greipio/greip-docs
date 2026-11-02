@@ -1,8 +1,41 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "title": "Greip API v2 (docs playground)",
-    "version": "2.0.0"
+    "version": "2.0.0",
+    "description": "Codegen: OpenAPI 3.1 requires openapi-generator 7.0.0 or newer (union null types and 3.1 parsing).\n\n## Tooling and import notes\n\n- **openapi-generator / quicktype:** Use OpenAPI **3.1** with generator **7.0.0+**. `GeoAsnModule.cidr` uses `type: [string, null]`.\n- **Query name `params`:** Wire name stays `params`. Generated clients may use `greipParams` where `x-codegen-parameter-name` is set.\n- **`GeoAsnModule.type`:** Wire JSON key is `type` (reserved in some languages). Confirm serialization annotations in generated code.\n- **Azure API Management:** Security schemes and operation `security` are not applied on import; add `validate-jwt` or subscriptions after import. On import, set **translateRequiredQueryParameters** to `query` so required query params (`ips`, `country_code`) stay in the query string. Operation `externalDocs` are ignored; see https://docs.greip.io for full reference.",
+    "x-greip-tooling": {
+      "openapiGenerator": {
+        "minimumVersion": "7.0.0",
+        "reason": "OpenAPI 3.1 parsing and type unions with null (GeoAsnModule.cidr)."
+      },
+      "reservedWireNames": {
+        "queryParameter_params": {
+          "wireName": "params",
+          "codegenHint": "x-codegen-parameter-name greipParams on geo/lookup params query."
+        },
+        "GeoAsnModule.type": {
+          "wireName": "type",
+          "codegenHint": "Verify @JsonProperty / SerializedName maps generated member back to type."
+        }
+      },
+      "azureApiManagement": {
+        "openapi31": "Imports as 3.1-compatible only; many 3.1 constructs downgrade to 3.0 or drop.",
+        "ignoredOnImport": [
+          "components.securitySchemes (configure validate-jwt or subscription after import)",
+          "operation.security",
+          "operation.externalDocs",
+          "root externalDocs"
+        ],
+        "requiredQueryParameters": {
+          "translateRequiredQueryParameters": "query",
+          "affected": [
+            "GET /geo/ip/bulk?ips=...",
+            "GET /score/phone/{phone}?country_code=..."
+          ]
+        }
+      }
+    }
   },
   "servers": [
     {
@@ -21,7 +54,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules."
+            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules.",
+            "x-codegen-parameter-name": "greipParams"
           },
           {
             "name": "lang",
@@ -91,6 +125,9 @@
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Geo"
         ]
       }
     },
@@ -114,7 +151,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules."
+            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules.",
+            "x-codegen-parameter-name": "greipParams"
           },
           {
             "name": "lang",
@@ -170,13 +208,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Geo"
         ]
       }
     },
@@ -200,7 +248,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules."
+            "description": "Optional modules: security, currency, timezone, location, device. Basic ip and geo are always included. Unrecognized tokens are accepted but do not add modules.",
+            "x-codegen-parameter-name": "greipParams"
           },
           {
             "name": "lang",
@@ -270,6 +319,9 @@
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Lookup"
         ]
       }
     },
@@ -293,7 +345,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "Optional modules: language, flag, currency. Base geo object is always returned."
+            "description": "Optional modules: language, flag, currency. Base geo object is always returned.",
+            "x-codegen-parameter-name": "greipParams"
           },
           {
             "name": "format",
@@ -328,13 +381,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Lookup"
         ]
       }
     },
@@ -384,13 +447,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Lookup"
         ]
       }
     },
@@ -440,13 +513,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Lookup"
         ]
       }
     },
@@ -496,13 +579,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Lookup"
         ]
       }
     },
@@ -552,13 +645,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Lookup"
         ]
       }
     },
@@ -608,13 +711,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Scoring"
         ]
       }
     },
@@ -664,13 +777,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Scoring"
         ]
       }
     },
@@ -728,13 +851,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
         },
         "security": [
           {
             "bearerAuth": []
           }
+        ],
+        "tags": [
+          "Scoring"
         ]
       }
     },
@@ -752,33 +885,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "text"
-                ],
-                "properties": {
-                  "text": {
-                    "type": "string"
-                  },
-                  "format": {
-                    "type": "string"
-                  },
-                  "mode": {
-                    "type": "string"
-                  },
-                  "source": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/ScoreTextRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
-        }
+        },
+        "tags": [
+          "Scoring"
+        ]
       }
     },
     "/score/payments": {
@@ -795,33 +921,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "data"
-                ],
-                "properties": {
-                  "data": {
-                    "type": "object"
-                  },
-                  "format": {
-                    "type": "string"
-                  },
-                  "mode": {
-                    "type": "string"
-                  },
-                  "source": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/ScorePaymentsRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
-        }
+        },
+        "tags": [
+          "Scoring"
+        ]
       }
     },
     "/account/users": {
@@ -838,24 +957,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "value"
-                ],
-                "properties": {
-                  "value": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/DeleteAccountUsersRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
-        }
+        },
+        "tags": [
+          "Account"
+        ]
       }
     },
     "/ip": {
@@ -865,9 +986,19 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GreipJsonSuccessEnvelope"
+                }
+              }
+            }
           }
-        }
+        },
+        "tags": [
+          "Utility"
+        ]
       }
     }
   },
@@ -879,6 +1010,83 @@
       }
     },
     "schemas": {
+      "GeoIpModule": {
+        "type": "object",
+        "description": "IP metadata returned on geo/IP lookups.",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "numeric": {
+            "type": "integer"
+          },
+          "bogon": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GeoGeoModule": {
+        "type": "object",
+        "description": "Geolocation fields returned on geo/IP lookups.",
+        "properties": {
+          "continent": {
+            "type": "string"
+          },
+          "continent_code": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "postal": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          }
+        }
+      },
+      "PaymentScoreRequestData": {
+        "type": "object",
+        "description": "Transaction and customer fields for payment fraud scoring. Additional keys are accepted.",
+        "additionalProperties": true,
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "purchase, deposit, or withdrawal"
+          },
+          "customer_ip": {
+            "type": "string"
+          },
+          "customer_email": {
+            "type": "string"
+          },
+          "transaction_id": {
+            "type": "string"
+          },
+          "transaction_amount": {
+            "type": "number"
+          },
+          "transaction_currency": {
+            "type": "string"
+          }
+        }
+      },
       "GeoAsnModule": {
         "type": "object",
         "properties": {
@@ -888,8 +1096,10 @@
             "example": "AS15169"
           },
           "cidr": {
-            "type": "string",
-            "nullable": true,
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Longest matching CIDR block for the looked-up IP on the resolved ASN, or null when none matches.",
             "example": "8.8.8.0/24"
           },
@@ -912,7 +1122,9 @@
             "type": "string"
           },
           "type": {
-            "type": "string"
+            "type": "string",
+            "x-greip-wire-name": "type",
+            "description": "ASN classification."
           }
         }
       },
@@ -921,10 +1133,10 @@
         "description": "Geo/IP lookup payload (modules depend on params).",
         "properties": {
           "ip": {
-            "type": "object"
+            "$ref": "#/components/schemas/GeoIpModule"
           },
           "geo": {
-            "type": "object"
+            "$ref": "#/components/schemas/GeoGeoModule"
           },
           "asn": {
             "$ref": "#/components/schemas/GeoAsnModule"
@@ -951,7 +1163,113 @@
             "example": 42
           }
         }
+      },
+      "GreipJsonSuccessEnvelope": {
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "execution_ms"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "description": "Endpoint-specific payload.",
+            "additionalProperties": true
+          },
+          "execution_ms": {
+            "type": "integer",
+            "example": 42
+          }
+        }
+      },
+      "GreipServiceRequestFields": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "ScoreTextRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GreipServiceRequestFields"
+          },
+          {
+            "type": "object",
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "ScorePaymentsRequest": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GreipServiceRequestFields"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/PaymentScoreRequestData"
+              }
+            }
+          }
+        ]
+      },
+      "DeleteAccountUsersRequest": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Geo",
+      "description": "IP geolocation for the caller or bulk lists."
+    },
+    {
+      "name": "Lookup",
+      "description": "Look up IPs, countries, ASN, BIN, IBAN, and domains."
+    },
+    {
+      "name": "Scoring",
+      "description": "Risk scoring for IP, email, phone, text, and payments."
+    },
+    {
+      "name": "Account",
+      "description": "Account compliance and data deletion."
+    },
+    {
+      "name": "Utility",
+      "description": "Unauthenticated utility endpoints."
+    }
+  ]
 }
