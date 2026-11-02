@@ -888,10 +888,8 @@
             "example": "AS15169"
           },
           "cidr": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": "string",
+            "nullable": true,
             "description": "Longest matching CIDR block for the looked-up IP on the resolved ASN, or null when none matches.",
             "example": "8.8.8.0/24"
           },

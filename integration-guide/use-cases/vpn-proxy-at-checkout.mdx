@@ -1,0 +1,198 @@
+---
+title: "Detect VPN and proxy users at checkout"
+sidebarTitle: "VPN/Proxy at checkout"
+description: "Score checkout traffic with Greip's security module, interpret VPN, proxy, Tor, and hosting signals, and decide when to challenge versus block."
+icon: "route"
+iconType: "duotone"
+---
+
+## Overview
+
+Fraudsters often hide behind VPNs, residential proxies, Tor exit nodes, and datacenter IPs when they test stolen cards or ship goods to reshippers. At checkout, you want a fast IP check before you capture payment: enough signal to step up verification without turning away every privacy-conscious shopper.
+
+Greip exposes those signals in the **`security`** module on [IP Lookup](/api-reference/v2/endpoint/data-lookup/ip) and [IP Geolocation](/api-reference/v2/endpoint/data-lookup/geoip). Pair them with [Payment Fraud Detection](/api-reference/v2/endpoint/scoring/payment) when you already send full transaction context. For field-level reference, see [VPN/Proxy Detection](/options/vpn-proxy-detection).
+
+## Where to call Greip in checkout
+
+Run the IP check on the server when the customer submits checkout (or when they land on the payment step), using the **client IP you trust** (for example `X-Forwarded-For` only after your edge strips untrusted values).
+
+Typical flow:
+
+1. Read `customer_ip` from the checkout session.
+2. Call Greip with `params=security` (and optional `location` if you compare billing country to geo).
+3. Map `data.security` to **allow**, **challenge**, or **block**.
+4. Only then call your payment processor or run payment scoring.
+
+<Tip>
+  Use `GET /lookup/ip/{ip}` when you have the shopper IP. Use `GET /geo/ip` when Greip should use the caller IP (same request as your backend, with the shopper IP forwarded according to your proxy setup).
+</Tip>
+
+## Request shape
+
+Bearer auth in the `Authorization` header. Request the **`security`** module with the `params` query parameter.
+
+### IP Lookup (recommended at checkout)
+
+| Item | Value |
+| ---- | ----- |
+| Method | `GET` |
+| URL | `https://v2.greipapi.com/lookup/ip/{ip}` |
+| Path | `ip`: IPv4 or IPv6 of the shopper |
+| Query | `params=security` (add `location` if you need structured geo alongside security) |
+| Headers | `Authorization: Bearer <token>` |
+
+### Optional: payment scoring in the same flow
+
+If you already call [Payment Fraud Detection](/api-reference/v2/endpoint/scoring/payment), include at least `customer_ip` (and billing/shipping fields you collect). Greip evaluates transaction rules in one request; you can still run a dedicated IP lookup when you only need VPN/proxy/Tor/hosting flags before showing the card form.
+
+Minimal payment body shape:
+
+```json
+{
+  "data": {
+    "action": "purchase",
+    "transaction_id": "ord_98231",
+    "transaction_amount": 149.99,
+    "transaction_currency": "USD",
+    "customer_ip": "203.0.113.44",
+    "customer_email": "buyer@example.com",
+    "customer_country": "US"
+  }
+}
+```
+
+## Security fields to use at checkout
+
+When `params` includes `security`, `data.security` contains:
+
+| Field | Type | Checkout meaning |
+| ----- | ---- | ---------------- |
+| `vpn_or_proxy` | boolean | Traffic is routed through a VPN or proxy service. |
+| `vpn_or_proxy_type` | string | Proxy class when detected (for example `VPN`, `Socks`). |
+| `tor` | boolean | Tor exit or Tor-related routing. |
+| `bot` | boolean | Automated or bot-like client (often block for card checkout). |
+| `relay` | boolean | Apple Private Relay (or similar relay). Many buyers are legitimate. |
+| `relay_country` | string | Relay egress country when `relay` is true; otherwise `null`. |
+| `relay_city` | string | Relay egress city when `relay` is true; otherwise `null`. |
+| `hosting` | boolean | Datacenter or hosting provider IP (common for fraud, also used by legitimate remote workers). |
+| `is_blacklisted` | boolean | IP matched your [blacklists](/knowledge-base/blacklists/overview) or [custom rules](/knowledge-base/custom-rules/overview). |
+
+Example `security` object:
+
+```json
+{
+  "vpn_or_proxy": true,
+  "vpn_or_proxy_type": "VPN",
+  "tor": false,
+  "bot": false,
+  "relay": false,
+  "relay_country": null,
+  "relay_city": null,
+  "hosting": true,
+  "is_blacklisted": false
+}
+```
+
+For a composite IP risk score (0–100) and the same security object, use [IP Reputation](/api-reference/v2/endpoint/scoring/ip-reputation).
+
+## When to challenge vs block
+
+Treat Greip signals as **inputs to your policy**, not hard-coded declines. Suggested starting points:
+
+| Signal | Suggested action | Rationale |
+| ------ | ---------------- | --------- |
+| `is_blacklisted` | **Block** | You explicitly flagged this IP or range. |
+| `tor` | **Block** (or block card checkout) | Very high abuse rate for e-commerce checkout. |
+| `bot` | **Block** | Non-human checkout should not reach capture. |
+| `vpn_or_proxy` | **Challenge** | Step up with 3-D Secure, SMS OTP, or manual review; block on repeat failures or high order value. |
+| `hosting` | **Challenge** | Datacenter IPs rarely match home broadband; combine with AVS/CVV and velocity. |
+| `relay` | **Allow or light challenge** | Apple Private Relay users are often genuine; avoid blanket declines on `relay` alone. |
+| Clean security + low [IP Reputation](/api-reference/v2/endpoint/scoring/ip-reputation) score | **Allow** | Proceed with your normal fraud stack. |
+
+Combine signals: for example **challenge** when `vpn_or_proxy` or `hosting` is true, **block** when `tor` or `bot` is true, and **block** when `is_blacklisted` is true regardless of other flags.
+
+<Warning>
+  The `security` module requires a plan that includes it. On restricted plans the API returns error code `114` (`security_module_not_allowed`). See [error codes](/error-codes).
+</Warning>
+
+## Example: map security to a checkout decision
+
+<CodeGroup>
+
+```javascript Node.js
+const GREIP_TOKEN = process.env.GREIP_API_KEY;
+
+async function checkoutIpDecision(customerIp) {
+  const url = new URL(
+    `https://v2.greipapi.com/lookup/ip/${encodeURIComponent(customerIp)}`
+  );
+  url.searchParams.set("params", "security");
+
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${GREIP_TOKEN}` },
+  });
+  const body = await res.json();
+
+  if (!body.success) {
+    throw new Error(`Greip error: ${JSON.stringify(body)}`);
+  }
+
+  const s = body.data.security;
+
+  if (s.is_blacklisted || s.tor || s.bot) {
+    return { action: "block", security: s };
+  }
+  if (s.vpn_or_proxy || s.hosting) {
+    return { action: "challenge", security: s };
+  }
+  if (s.relay) {
+    return { action: "allow", security: s, note: "relay_detected" };
+  }
+  return { action: "allow", security: s };
+}
+```
+
+```python Python
+import os
+import requests
+
+GREIP_TOKEN = os.environ["GREIP_API_KEY"]
+BASE = "https://v2.greipapi.com"
+
+
+def checkout_ip_decision(customer_ip: str) -> dict:
+    url = f"{BASE}/lookup/ip/{customer_ip}"
+    headers = {"Authorization": f"Bearer {GREIP_TOKEN}"}
+    params = {"params": "security"}
+
+    res = requests.get(url, headers=headers, params=params, timeout=10)
+    res.raise_for_status()
+    body = res.json()
+
+    if not body.get("success"):
+        raise RuntimeError(f"Greip error: {body}")
+
+    s = body["data"]["security"]
+
+    if s.get("is_blacklisted") or s.get("tor") or s.get("bot"):
+        return {"action": "block", "security": s}
+    if s.get("vpn_or_proxy") or s.get("hosting"):
+        return {"action": "challenge", "security": s}
+    if s.get("relay"):
+        return {"action": "allow", "security": s, "note": "relay_detected"}
+    return {"action": "allow", "security": s}
+```
+
+</CodeGroup>
+
+Wire the returned `action` to your checkout:
+
+- **allow**: continue to payment capture.
+- **challenge**: require step-up authentication or hold the order for review.
+- **block**: show a generic error and do not retry the same card blindly (log `security` for analysts).
+
+## Related guides
+
+- [Payment Fraud](/integration-guide/use-cases/payment-fraud): broader pre-purchase scoring and supporting endpoints.
+- [Chargeback Fraud](/integration-guide/use-cases/chargeback-fraud): post-authorization patterns and BIN/country mismatches.
+- [Customize modules](/options/customize-modules): other `params` modules (`location`, `currency`, and more).
