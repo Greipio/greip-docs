@@ -180,6 +180,7 @@
                 "pages": [
                   "integration-guide/use-cases/payment-fraud",
                   "integration-guide/use-cases/vpn-proxy-at-checkout",
+                  "integration-guide/use-cases/verify-iban-bin-before-payment",
                   "integration-guide/use-cases/chargeback-fraud",
                   "integration-guide/use-cases/account-takeover",
                   "integration-guide/use-cases/multi-accounting",
@@ -362,6 +363,7 @@
                 "pages": [
                   "integration-guide/use-cases/payment-fraud",
                   "integration-guide/use-cases/vpn-proxy-at-checkout",
+                  "integration-guide/use-cases/verify-iban-bin-before-payment",
                   "integration-guide/use-cases/chargeback-fraud",
                   "integration-guide/use-cases/account-takeover",
                   "integration-guide/use-cases/multi-accounting",

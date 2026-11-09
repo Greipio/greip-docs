@@ -93,7 +93,7 @@ Example `security` object:
 }
 ```
 
-For a composite IP risk score (0–100) and the same security object, use [IP Reputation](/api-reference/v2/endpoint/scoring/ip-reputation).
+For a composite IP risk score (0 to 100) and the same security object, use [IP Reputation](/api-reference/v2/endpoint/scoring/ip-reputation).
 
 ## When to challenge vs block
 
@@ -193,6 +193,7 @@ Wire the returned `action` to your checkout:
 
 ## Related guides
 
+- [IBAN & BIN before payment](/integration-guide/use-cases/verify-iban-bin-before-payment): card issuing country and IBAN country checks against the IP country before you charge or pay out.
 - [Payment Fraud](/integration-guide/use-cases/payment-fraud): broader pre-purchase scoring and supporting endpoints.
 - [Chargeback Fraud](/integration-guide/use-cases/chargeback-fraud): post-authorization patterns and BIN/country mismatches.
 - [Customize modules](/options/customize-modules): other `params` modules (`location`, `currency`, and more).

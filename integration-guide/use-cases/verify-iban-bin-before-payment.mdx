@@ -1,0 +1,401 @@
+---
+title: "Verify IBAN and card BIN before accepting a payment"
+sidebarTitle: "IBAN & BIN before payment"
+description: "Check card BIN and IBAN data with Greip before you charge a card or send a payout, compare card or IBAN country with IP country, and decide when to allow, challenge, or block."
+icon: "building-columns"
+iconType: "duotone"
+---
+
+## Overview
+
+Stolen cards and mule bank accounts usually look normal until you compare them with the rest of the session. A card issued in one country, used from an IP in another country, with a billing address in a third, is a common pattern in card testing and account takeover. A bank account that does not exist, or that belongs to a country you never pay out to, is a common pattern in payout fraud.
+
+Greip gives you two fast pre-payment checks:
+
+- [BIN / IIN Lookup](/api-reference/v2/endpoint/data-lookup/bin) returns the card scheme, card type, prepaid and commercial flags, issuing bank, and **issuing country** from the first digits of a card.
+- [IBAN Validation](/api-reference/v2/endpoint/data-lookup/iban) checks the IBAN structure and checksum and returns the **IBAN country**, SEPA and EU flags, and bank details when available.
+
+Pair them with [IP Lookup](/api-reference/v2/endpoint/data-lookup/ip) to compare the card or IBAN country with the country of the shopper's IP, then map the result to **allow**, **challenge**, or **block**.
+
+<Warning>
+  A valid BIN or a valid IBAN only proves the number is well formed and matches a known issuer or country format. It does **not** prove that the card or bank account belongs to the person paying or being paid, that it is open, or that it has funds. Use 3-D Secure for cards, and your bank's payee verification (for example Verification of Payee or Confirmation of Payee where available) or micro-deposits for bank accounts.
+</Warning>
+
+## Where to call Greip in the payment flow
+
+Run these checks on your server, after the customer submits payment details and **before** you call your payment processor or release a payout.
+
+Typical card flow:
+
+1. Read the first 6 to 8 digits of the card (the BIN) from your card form or your processor's tokenization response. You do not need to send the full card number.
+2. Call BIN Lookup and IP Lookup (with `params=security`) in parallel.
+3. Compare `data.country.alpha2` from BIN Lookup with `data.geo.country_code` from IP Lookup, and with the billing country you collected.
+4. Map the result to **allow**, **challenge**, or **block**, then call your processor.
+
+Typical IBAN flow (payouts, SEPA Direct Debit, bank transfer checkout):
+
+1. Normalize the IBAN the customer entered (spaces are accepted).
+2. Call IBAN Validation and IP Lookup in parallel.
+3. Stop if `data.is_valid` is `false`. Otherwise compare `data.country.iso3166` with the IP country and the customer's declared country.
+4. Map the result to **allow**, **challenge**, or **block** before you create the mandate or send money.
+
+<Tip>
+  Send only the BIN (first 6 to 8 digits), not the full card number. BIN Lookup accepts 6 or more digits, and the response returns at most 8 digits in `data.bin`. Keeping full card numbers out of your fraud checks reduces the card data your own systems handle.
+</Tip>
+
+## Request shape
+
+All requests use Bearer auth in the `Authorization` header. API v2 does not accept the key in query parameters. See [Authentication](/authentication).
+
+### BIN Lookup
+
+| Item | Value |
+| ---- | ----- |
+| Method | `GET` |
+| URL | `https://v2.greipapi.com/lookup/bin/{bin}` |
+| Path | `bin`: first 6 to 8 digits of the card (minimum 6 digits) |
+| Query | Optional: `mode=test` during development, `user_id` to group requests in the [Events page](/knowledge-base/events-and-alerts/overview) |
+| Headers | `Authorization: Bearer <token>` |
+
+### IBAN Validation
+
+| Item | Value |
+| ---- | ----- |
+| Method | `GET` |
+| URL | `https://v2.greipapi.com/lookup/iban/{iban}` |
+| Path | `iban`: the IBAN, with or without spaces (for example `BE71096123456769`) |
+| Query | Optional: `mode=test`, `user_id` |
+| Headers | `Authorization: Bearer <token>` |
+
+### IP Lookup (for the country comparison)
+
+| Item | Value |
+| ---- | ----- |
+| Method | `GET` |
+| URL | `https://v2.greipapi.com/lookup/ip/{ip}` |
+| Path | `ip`: IPv4 or IPv6 of the customer |
+| Query | `params=security` (the `geo` object with `country_code` is always included) |
+| Headers | `Authorization: Bearer <token>` |
+
+## BIN fields to use before payment
+
+| Field | Type | Payment meaning |
+| ----- | ---- | --------------- |
+| `data.is_valid` | boolean | The card prefix passes structural validation. `false` usually means a typo or a made-up number. |
+| `data.reason` | string | Validation message when `is_valid` is `false`, otherwise `null`. |
+| `data.is_blacklisted` | boolean | The BIN matched your [blacklists](/knowledge-base/blacklists/overview) or [custom rules](/knowledge-base/custom-rules/overview) (blacklists and custom rules need the Premium plan or above). |
+| `data.scheme.name` | string | Card network, for example `Visa` or `Mastercard`. |
+| `data.scheme.type` | string | `debit`, `credit`, and so on, when known. |
+| `data.scheme.is_prepaid` | boolean | Prepaid card when known, otherwise `null`. |
+| `data.scheme.is_commercial` | boolean | Commercial or business card when known, otherwise `null`. |
+| `data.bank.name` | string | Issuing bank name when available. |
+| `data.country.alpha2` | string | Issuing country (ISO 3166-1 alpha-2). Use this for the country mismatch check. |
+
+Example BIN response (trimmed):
+
+```json
+{
+  "success": true,
+  "data": {
+    "bin": "456789",
+    "is_valid": true,
+    "reason": null,
+    "is_blacklisted": false,
+    "scheme": {
+      "name": "Visa",
+      "is_luhn": true,
+      "is_prepaid": false,
+      "is_commercial": false,
+      "type": "debit",
+      "brand": "Traditional",
+      "currency": "SAR"
+    },
+    "bank": { "name": "AL RAJHI BANKING AND INVESTMENT CORP.", "city": "Riyadh" },
+    "country": { "alpha2": "SA", "name": "Saudi Arabia" }
+  },
+  "execution_ms": 2
+}
+```
+
+## IBAN fields to use before payment
+
+| Field | Type | Payment meaning |
+| ----- | ---- | --------------- |
+| `data.is_valid` | boolean | The IBAN structure and checksum are valid. Rely on this field for the validity decision. |
+| `data.formats.obfuscated` | string | Masked IBAN (for example `BE** **** **** 6769`). Safe to show in your UI and logs. |
+| `data.country.iso3166` | string | IBAN country (ISO 3166-1 alpha-2) when available. Use this for the country mismatch check. |
+| `data.country.is_sepa` | boolean | The IBAN country participates in SEPA. |
+| `data.country.is_eu` | boolean | The IBAN country is an EU member. |
+| `data.country.currency` | string | Currency of the IBAN country. |
+| `data.bank.identifier` | string | Bank identifier (BIC/SWIFT) when available. |
+| `data.bank.name` | string | Bank name when available. |
+
+Example IBAN response (trimmed):
+
+```json
+{
+  "success": true,
+  "data": {
+    "is_valid": true,
+    "iban": "BE71096123456769",
+    "formats": {
+      "machine": "BE71096123456769",
+      "human": "BE71 0961 2345 6769",
+      "obfuscated": "BE** **** **** 6769"
+    },
+    "country": {
+      "name": "Belgium",
+      "iso3166": "BE",
+      "currency": "EUR",
+      "is_eu": true,
+      "is_sepa": true
+    },
+    "bank": { "identifier": "GEBABEBB", "name": "BNP Paribas Fortis" }
+  },
+  "execution_ms": 1
+}
+```
+
+## The country mismatch check
+
+Compare the payment instrument's country with the IP country:
+
+- Card: `data.country.alpha2` (BIN Lookup) vs `data.geo.country_code` (IP Lookup)
+- IBAN: `data.country.iso3166` (IBAN Validation) vs `data.geo.country_code` (IP Lookup)
+
+Also compare both with the billing or declared country you collect. All three values are ISO 3166-1 alpha-2 codes, so compare them in uppercase.
+
+A mismatch is a **signal, not a verdict**. Travelers, expats, cross-border shoppers, and customers of digital banks that issue IBANs from another country all create honest mismatches. The mismatch becomes strong when it stacks with other signals, such as a VPN or proxy, a prepaid card, a new account, or a high order value.
+
+<Note>
+  When `data.security.relay` is `true` (for example Apple Private Relay), the IP location reflects the relay egress. Treat a country mismatch on relay traffic as a weaker signal.
+</Note>
+
+## When to allow, challenge, or block
+
+Treat these as starting points for your own policy, not hard-coded declines:
+
+| Signal | Suggested action | Rationale |
+| ------ | ---------------- | --------- |
+| BIN `is_valid` is `false`, or error `120` | **Block** and ask the customer to re-enter the card | The number is malformed or not a real card prefix. |
+| IBAN `is_valid` is `false`, or error `122` | **Block** and ask the customer to re-enter the IBAN | Money sent to an invalid IBAN is returned or lost. |
+| BIN `is_blacklisted` is `true` | **Block** | You explicitly flagged this BIN or card country. |
+| IP `tor` or `bot` is `true` | **Block** | Same policy as [VPN/Proxy at checkout](/integration-guide/use-cases/vpn-proxy-at-checkout). |
+| IBAN country not supported by your payment rail (for example `is_sepa` is `false` on a SEPA-only flow) | **Block** and offer another payment method | The transfer cannot be processed on that rail. |
+| Card or IBAN country differs from IP country, **and** `vpn_or_proxy` or `hosting` is `true` | **Challenge**, then hold for manual review if the step-up fails | Several independent signals point away from a genuine local customer. |
+| Card or IBAN country differs from IP country or billing country | **Challenge** (3-D Secure for cards, payee verification or a confirmation step for IBANs) | Common in fraud, also common for travelers and cross-border customers. |
+| `is_prepaid` is `true` on a high-value or digital goods order | **Challenge** | Prepaid cards are harder to trace back to a person. Allow on low-value orders. |
+| Countries match, valid instrument, clean IP security | **Allow** | Continue with your normal fraud stack and processor checks. |
+
+Combine signals in this order: **block** first (invalid, blacklisted, Tor, bot, unsupported rail), then **challenge** (mismatch, VPN or hosting, prepaid on risky orders), then **allow**.
+
+<Warning>
+  BIN Lookup and IP Lookup are available on the Standard plan and above. IBAN Validation is available on the Premium plan and above. A request for a feature your plan does not include returns an error such as `117` (`feature_not_available`). Errors return `success: false` with a `code`, so always check `success` before you read `data`. See [error codes](/error-codes) and [plans](https://greip.io/detailed-pricing).
+</Warning>
+
+## Example: card BIN vs IP country
+
+<CodeGroup>
+
+```javascript Node.js
+const GREIP_TOKEN = process.env.GREIP_API_KEY;
+const BASE = "https://v2.greipapi.com";
+
+async function greip(path, params = {}) {
+  const url = new URL(path, BASE);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${GREIP_TOKEN}` },
+  });
+  return res.json();
+}
+
+async function cardPaymentDecision({ bin, customerIp, billingCountry }) {
+  const [binRes, ipRes] = await Promise.all([
+    greip(`/lookup/bin/${encodeURIComponent(bin.slice(0, 8))}`),
+    greip(`/lookup/ip/${encodeURIComponent(customerIp)}`, { params: "security" }),
+  ]);
+
+  if (!binRes.success) {
+    if (binRes.code === 120) return { action: "block", reason: "invalid_bin" };
+    throw new Error(`Greip BIN error: ${JSON.stringify(binRes)}`);
+  }
+  if (!ipRes.success) {
+    throw new Error(`Greip IP error: ${JSON.stringify(ipRes)}`);
+  }
+
+  const card = binRes.data;
+  const s = ipRes.data.security;
+  const cardCountry = (card.country?.alpha2 || "").toUpperCase();
+  const ipCountry = (ipRes.data.geo?.country_code || "").toUpperCase();
+  const billing = (billingCountry || "").toUpperCase();
+
+  if (!card.is_valid) return { action: "block", reason: "invalid_bin" };
+  if (card.is_blacklisted) return { action: "block", reason: "blacklisted_bin" };
+  if (s.tor || s.bot) return { action: "block", reason: "tor_or_bot" };
+
+  const ipMismatch = cardCountry && ipCountry && cardCountry !== ipCountry && !s.relay;
+  const billingMismatch = cardCountry && billing && cardCountry !== billing;
+
+  if (ipMismatch && (s.vpn_or_proxy || s.hosting)) {
+    return { action: "challenge", reason: "country_mismatch_with_proxy", review: true };
+  }
+  if (ipMismatch || billingMismatch) {
+    return { action: "challenge", reason: "country_mismatch" };
+  }
+  if (card.scheme?.is_prepaid) {
+    return { action: "allow", reason: "prepaid_card", note: "challenge on high-value orders" };
+  }
+  return { action: "allow" };
+}
+```
+
+```python Python
+import os
+import requests
+
+GREIP_TOKEN = os.environ["GREIP_API_KEY"]
+BASE = "https://v2.greipapi.com"
+
+
+def greip(path, params=None):
+    res = requests.get(
+        f"{BASE}{path}",
+        headers={"Authorization": f"Bearer {GREIP_TOKEN}"},
+        params=params or {},
+        timeout=10,
+    )
+    return res.json()
+
+
+def card_payment_decision(bin_digits: str, customer_ip: str, billing_country: str = "") -> dict:
+    bin_res = greip(f"/lookup/bin/{bin_digits[:8]}")
+    ip_res = greip(f"/lookup/ip/{customer_ip}", {"params": "security"})
+
+    if not bin_res.get("success"):
+        if bin_res.get("code") == 120:
+            return {"action": "block", "reason": "invalid_bin"}
+        raise RuntimeError(f"Greip BIN error: {bin_res}")
+    if not ip_res.get("success"):
+        raise RuntimeError(f"Greip IP error: {ip_res}")
+
+    card = bin_res["data"]
+    s = ip_res["data"]["security"]
+    card_country = ((card.get("country") or {}).get("alpha2") or "").upper()
+    ip_country = (ip_res["data"]["geo"].get("country_code") or "").upper()
+    billing = (billing_country or "").upper()
+
+    if not card.get("is_valid"):
+        return {"action": "block", "reason": "invalid_bin"}
+    if card.get("is_blacklisted"):
+        return {"action": "block", "reason": "blacklisted_bin"}
+    if s.get("tor") or s.get("bot"):
+        return {"action": "block", "reason": "tor_or_bot"}
+
+    ip_mismatch = bool(card_country and ip_country and card_country != ip_country and not s.get("relay"))
+    billing_mismatch = bool(card_country and billing and card_country != billing)
+
+    if ip_mismatch and (s.get("vpn_or_proxy") or s.get("hosting")):
+        return {"action": "challenge", "reason": "country_mismatch_with_proxy", "review": True}
+    if ip_mismatch or billing_mismatch:
+        return {"action": "challenge", "reason": "country_mismatch"}
+    if (card.get("scheme") or {}).get("is_prepaid"):
+        return {"action": "allow", "reason": "prepaid_card", "note": "challenge on high-value orders"}
+    return {"action": "allow"}
+```
+
+</CodeGroup>
+
+## Example: IBAN vs IP country
+
+<CodeGroup>
+
+```javascript Node.js
+async function ibanPaymentDecision({ iban, customerIp, declaredCountry, sepaOnly = true }) {
+  const [ibanRes, ipRes] = await Promise.all([
+    greip(`/lookup/iban/${encodeURIComponent(iban.replace(/\s+/g, ""))}`),
+    greip(`/lookup/ip/${encodeURIComponent(customerIp)}`, { params: "security" }),
+  ]);
+
+  if (!ibanRes.success) {
+    if (ibanRes.code === 122) return { action: "block", reason: "invalid_iban" };
+    throw new Error(`Greip IBAN error: ${JSON.stringify(ibanRes)}`);
+  }
+  if (!ipRes.success) {
+    throw new Error(`Greip IP error: ${JSON.stringify(ipRes)}`);
+  }
+
+  const acct = ibanRes.data;
+  const s = ipRes.data.security;
+  const ibanCountry = (acct.country?.iso3166 || "").toUpperCase();
+  const ipCountry = (ipRes.data.geo?.country_code || "").toUpperCase();
+  const declared = (declaredCountry || "").toUpperCase();
+
+  if (!acct.is_valid) return { action: "block", reason: "invalid_iban" };
+  if (sepaOnly && !acct.country?.is_sepa) return { action: "block", reason: "unsupported_rail" };
+  if (s.tor || s.bot) return { action: "block", reason: "tor_or_bot" };
+
+  const ipMismatch = ibanCountry && ipCountry && ibanCountry !== ipCountry && !s.relay;
+  const declaredMismatch = ibanCountry && declared && ibanCountry !== declared;
+
+  if (ipMismatch && (s.vpn_or_proxy || s.hosting)) {
+    return { action: "challenge", reason: "country_mismatch_with_proxy", review: true, masked: acct.formats.obfuscated };
+  }
+  if (ipMismatch || declaredMismatch) {
+    return { action: "challenge", reason: "country_mismatch", masked: acct.formats.obfuscated };
+  }
+  return { action: "allow", masked: acct.formats.obfuscated };
+}
+```
+
+```python Python
+def iban_payment_decision(iban: str, customer_ip: str, declared_country: str = "", sepa_only: bool = True) -> dict:
+    iban_res = greip(f"/lookup/iban/{iban.replace(' ', '')}")
+    ip_res = greip(f"/lookup/ip/{customer_ip}", {"params": "security"})
+
+    if not iban_res.get("success"):
+        if iban_res.get("code") == 122:
+            return {"action": "block", "reason": "invalid_iban"}
+        raise RuntimeError(f"Greip IBAN error: {iban_res}")
+    if not ip_res.get("success"):
+        raise RuntimeError(f"Greip IP error: {ip_res}")
+
+    acct = iban_res["data"]
+    country = acct.get("country") or {}
+    s = ip_res["data"]["security"]
+    iban_country = (country.get("iso3166") or "").upper()
+    ip_country = (ip_res["data"]["geo"].get("country_code") or "").upper()
+    declared = (declared_country or "").upper()
+    masked = acct["formats"]["obfuscated"]
+
+    if not acct.get("is_valid"):
+        return {"action": "block", "reason": "invalid_iban"}
+    if sepa_only and not country.get("is_sepa"):
+        return {"action": "block", "reason": "unsupported_rail"}
+    if s.get("tor") or s.get("bot"):
+        return {"action": "block", "reason": "tor_or_bot"}
+
+    ip_mismatch = bool(iban_country and ip_country and iban_country != ip_country and not s.get("relay"))
+    declared_mismatch = bool(iban_country and declared and iban_country != declared)
+
+    if ip_mismatch and (s.get("vpn_or_proxy") or s.get("hosting")):
+        return {"action": "challenge", "reason": "country_mismatch_with_proxy", "review": True, "masked": masked}
+    if ip_mismatch or declared_mismatch:
+        return {"action": "challenge", "reason": "country_mismatch", "masked": masked}
+    return {"action": "allow", "masked": masked}
+```
+
+</CodeGroup>
+
+Wire the returned `action` to your payment flow:
+
+- **allow**: continue to authorization, mandate creation, or payout.
+- **challenge**: run 3-D Secure for cards, or a payee verification or confirmation step for bank accounts. Hold the payment for review when `review` is set or the step-up fails.
+- **block**: show a generic message, ask for a different payment method, and log the masked instrument and signals for your analysts. Never log full card numbers or full IBANs.
+
+## Related guides
+
+- [VPN/Proxy at checkout](/integration-guide/use-cases/vpn-proxy-at-checkout): IP security signals and the challenge versus block policy used above.
+- [Payment Fraud](/integration-guide/use-cases/payment-fraud): full transaction scoring with [Payment Fraud Detection](/api-reference/v2/endpoint/scoring/payment).
+- [Chargeback Fraud](/integration-guide/use-cases/chargeback-fraud): post-authorization patterns and BIN country checks.
+- [Blacklists](/knowledge-base/blacklists/overview): block card BINs or card countries you never want to accept.
